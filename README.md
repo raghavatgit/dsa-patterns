@@ -13,3 +13,4 @@ A collection of foundational algorithmic patterns, time-complexity analyses, and
 | **Binary Search** | Monotonic search spaces, range boundaries | O(log N) | [TypeScript / Rust](patterns/binary-search.md) |
 | **Fast & Slow Pointers** | Cycle detection in lists/arrays, midpoint lookups | O(N) | [TypeScript / Rust](patterns/fast-slow-pointers.md) |
 | **Monotonic Stack** | Next greater element, histogram areas, temperatures | O(N) | [TypeScript / Rust](patterns/monotonic-stack.md) |
+| **Prefix Sums** | Static range sum queries, cumulative balances | O(1) query | [TypeScript / Rust](patterns/prefix-sums.md) |
