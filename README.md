@@ -26,3 +26,6 @@ A collection of foundational algorithmic patterns, time-complexity analyses, and
 
 | **Connected Components** | Graph reachability, island isolation, component IDs | O(V + E) | [C / TypeScript / Rust](patterns/connected-components-undirected-graph.md) |
 | **Dijkstra's Algorithm** | Single-source shortest path with non-negative weights | O((V + E) log V) | [TypeScript / Rust](patterns/dijkstras-shortest-path.md) |
+
+| **BFS Shortest Hop** | Unweighted shortest path, hop counts, level orders | O(V + E) | [C / TypeScript / Rust](patterns/bfs-unweighted-shortest-path.md) |
+| **Bellman-Ford** | Negative weights, negative cycle detection | O(V * E) | [TypeScript / Rust](patterns/bellman-ford-algorithm.md) |
