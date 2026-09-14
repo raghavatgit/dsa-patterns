@@ -20,3 +20,6 @@ A collection of foundational algorithmic patterns, time-complexity analyses, and
 | **LRU Cache** | Fixed-capacity recency cache eviction | O(1) get/put | [TypeScript / Rust](patterns/lru-cache.md) |
 | **Topological Sort** | Dependency resolution, build DAG ordering | O(V + E) | [TypeScript / Rust](patterns/topological-sort.md) |
 | **Interval Merging** | Calendar scheduling, range consolidation | O(N log N) | [TypeScript / Rust](patterns/interval-merging.md) |
+
+| **2D Flood Fill & BFS** | Grid traversal, connected components, shortest path | O(M * N) | [TypeScript / Rust](patterns/matrix-dfs-bfs-flood-fill.md) |
+| **Disjoint Set Union** | Dynamic connectivity, Kruskal MST, cycle checks | O(alpha(N)) | [TypeScript / Rust](patterns/disjoint-set-union.md) |
