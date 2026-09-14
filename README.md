@@ -23,3 +23,6 @@ A collection of foundational algorithmic patterns, time-complexity analyses, and
 
 | **2D Flood Fill & BFS** | Grid traversal, connected components, shortest path | O(M * N) | [TypeScript / Rust](patterns/matrix-dfs-bfs-flood-fill.md) |
 | **Disjoint Set Union** | Dynamic connectivity, Kruskal MST, cycle checks | O(alpha(N)) | [TypeScript / Rust](patterns/disjoint-set-union.md) |
+
+| **Connected Components** | Graph reachability, island isolation, component IDs | O(V + E) | [C / TypeScript / Rust](patterns/connected-components-undirected-graph.md) |
+| **Dijkstra's Algorithm** | Single-source shortest path with non-negative weights | O((V + E) log V) | [TypeScript / Rust](patterns/dijkstras-shortest-path.md) |
