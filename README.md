@@ -29,3 +29,16 @@ A collection of foundational algorithmic patterns, time-complexity analyses, and
 
 | **BFS Shortest Hop** | Unweighted shortest path, hop counts, level orders | O(V + E) | [C / TypeScript / Rust](patterns/bfs-unweighted-shortest-path.md) |
 | **Bellman-Ford** | Negative weights, negative cycle detection | O(V * E) | [TypeScript / Rust](patterns/bellman-ford-algorithm.md) |
+
+---
+
+## Solved Problems Catalog
+
+In addition to abstract patterns, explore concrete, fully tested problem writeups in the [Solutions Archive](solutions/):
+* [Two Sum (Hash Map)](solutions/001-two-sum.md)
+* [Three Sum (Two Pointers)](solutions/015-three-sum.md)
+* [Trapping Rain Water (Two Pointers)](solutions/042-trapping-rain-water.md)
+* [Maximum Subarray (Kadane)](solutions/053-maximum-subarray.md)
+* [Minimum Window Substring (Sliding Window)](solutions/076-minimum-window-substring.md)
+* [Number of Islands (Grid Traversal)](solutions/200-number-of-islands.md)
+* [Course Schedule (Topological Sort / DAG)](solutions/207-course-schedule.md)
