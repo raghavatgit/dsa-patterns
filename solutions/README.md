@@ -15,3 +15,9 @@ A curated repository of competitive programming and technical interview problems
 | **076** | **Minimum Window Substring** | Sliding Window | O(N) | O(ALPHA) | [Rust / TypeScript](076-minimum-window-substring.md) |
 | **200** | **Number of Islands** | Grid Traversal (DFS/BFS) | O(M * N) | O(M * N) | [Rust / TypeScript](200-number-of-islands.md) |
 | **207** | **Course Schedule** | Graph Cycle / Topological Sort | O(V + E) | O(V + E) | [Rust / TypeScript](207-course-schedule.md) |
+
+| **020** | **Valid Parentheses** | Stack / LIFO | O(N) | O(N) | [Rust / TypeScript](020-valid-parentheses.md) |
+| **102** | **Binary Tree Level Order** | BFS Queue / Trees | O(N) | O(W) | [TypeScript](102-binary-tree-level-order-traversal.md) |
+| **121** | **Best Time to Buy and Sell Stock** | Running Minimum / Arrays | O(N) | O(1) | [Rust / TypeScript](121-best-time-to-buy-and-sell-stock.md) |
+| **206** | **Reverse Linked List** | In-place Pointers | O(N) | O(1) | [C / TypeScript](206-reverse-linked-list.md) |
+
