@@ -21,3 +21,13 @@ A curated repository of competitive programming and technical interview problems
 | **121** | **Best Time to Buy and Sell Stock** | Running Minimum / Arrays | O(N) | O(1) | [Rust / TypeScript](121-best-time-to-buy-and-sell-stock.md) |
 | **206** | **Reverse Linked List** | In-place Pointers | O(N) | O(1) | [C / TypeScript](206-reverse-linked-list.md) |
 
+
+| **003** | **Longest Substring Without Repeating Characters** | Sliding Window | O(N) | O(min(N, A)) | [Rust / TypeScript](003-longest-substring-without-repeating-characters.md) |
+| **023** | **Merge k Sorted Lists** | Min-Heap / Priority Queue | O(N log k) | O(k) | [Rust / TypeScript](023-merge-k-sorted-lists.md) |
+| **033** | **Search in Rotated Sorted Array** | Binary Search | O(log N) | O(1) | [Rust / TypeScript](033-search-in-rotated-sorted-array.md) |
+| **098** | **Validate Binary Search Tree** | Trees / DFS Range | O(N) | O(H) | [TypeScript](098-validate-binary-search-tree.md) |
+| **198** | **House Robber** | Dynamic Programming | O(N) | O(1) | [Rust / TypeScript](198-house-robber.md) |
+| **238** | **Product of Array Except Self** | Prefix & Suffix | O(N) | O(1) | [Rust / TypeScript](238-product-of-array-except-self.md) |
+| **295** | **Find Median from Data Stream** | Dual-Heap Balancing | O(log N) add | O(N) | [Rust](295-find-median-from-data-stream.md) |
+| **300** | **Longest Increasing Subsequence** | Patience Binary Search | O(N log N) | O(N) | [Rust / TypeScript](300-longest-increasing-subsequence.md) |
+
