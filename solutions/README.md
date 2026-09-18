@@ -1,33 +1,43 @@
-# Solved Algorithmic Problems
+# Solved Problem Directory
 
-A curated repository of competitive programming and technical interview problems solved in idiomatic **Rust** and **TypeScript**, with asymptotic proofs, invariant analyses, and edge case breakdowns.
+Production-grade, verified algorithmic problem solutions implemented in Rust and TypeScript with formal complexity analyses, edge cases, and unit tests.
 
----
-
-## Solutions Directory
-
-| # | Problem | Category | Optimal Time | Optimal Space | Solutions |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **001** | **Two Sum** | Hash Map / Arrays | O(N) | O(N) | [Rust / TypeScript](001-two-sum.md) |
-| **015** | **Three Sum** | Two Pointers / Sorting | O(N^2) | O(1) | [Rust / TypeScript](015-three-sum.md) |
-| **042** | **Trapping Rain Water** | Two Pointers | O(N) | O(1) | [Rust / TypeScript](042-trapping-rain-water.md) |
-| **053** | **Maximum Subarray** | Dynamic Programming | O(N) | O(1) | [Rust / TypeScript](053-maximum-subarray.md) |
-| **076** | **Minimum Window Substring** | Sliding Window | O(N) | O(ALPHA) | [Rust / TypeScript](076-minimum-window-substring.md) |
-| **200** | **Number of Islands** | Grid Traversal (DFS/BFS) | O(M * N) | O(M * N) | [Rust / TypeScript](200-number-of-islands.md) |
-| **207** | **Course Schedule** | Graph Cycle / Topological Sort | O(V + E) | O(V + E) | [Rust / TypeScript](207-course-schedule.md) |
-
-| **020** | **Valid Parentheses** | Stack / LIFO | O(N) | O(N) | [Rust / TypeScript](020-valid-parentheses.md) |
-| **102** | **Binary Tree Level Order** | BFS Queue / Trees | O(N) | O(W) | [TypeScript](102-binary-tree-level-order-traversal.md) |
-| **121** | **Best Time to Buy and Sell Stock** | Running Minimum / Arrays | O(N) | O(1) | [Rust / TypeScript](121-best-time-to-buy-and-sell-stock.md) |
-| **206** | **Reverse Linked List** | In-place Pointers | O(N) | O(1) | [C / TypeScript](206-reverse-linked-list.md) |
-
-
-| **003** | **Longest Substring Without Repeating Characters** | Sliding Window | O(N) | O(min(N, A)) | [Rust / TypeScript](003-longest-substring-without-repeating-characters.md) |
-| **023** | **Merge k Sorted Lists** | Min-Heap / Priority Queue | O(N log k) | O(k) | [Rust / TypeScript](023-merge-k-sorted-lists.md) |
-| **033** | **Search in Rotated Sorted Array** | Binary Search | O(log N) | O(1) | [Rust / TypeScript](033-search-in-rotated-sorted-array.md) |
-| **098** | **Validate Binary Search Tree** | Trees / DFS Range | O(N) | O(H) | [TypeScript](098-validate-binary-search-tree.md) |
-| **198** | **House Robber** | Dynamic Programming | O(N) | O(1) | [Rust / TypeScript](198-house-robber.md) |
-| **238** | **Product of Array Except Self** | Prefix & Suffix | O(N) | O(1) | [Rust / TypeScript](238-product-of-array-except-self.md) |
-| **295** | **Find Median from Data Stream** | Dual-Heap Balancing | O(log N) add | O(N) | [Rust](295-find-median-from-data-stream.md) |
-| **300** | **Longest Increasing Subsequence** | Patience Binary Search | O(N log N) | O(N) | [Rust / TypeScript](300-longest-increasing-subsequence.md) |
-
+| ID | Title | Pattern / Category | Difficulty | Optimal Time | Space |
+|---|---|---|---|---|---|
+| 001 | Two Sum | Hash Map Indexing | Easy | $O(N)$ | $O(N)$ |
+| 003 | Longest Substring Without Repeating Characters | Sliding Window | Medium | $O(N)$ | $O(\min(N, \Sigma))$ |
+| 010 | Regular Expression Matching | 2D Dynamic Programming | Hard | $O(M \times N)$ | $O(M \times N)$ |
+| 015 | 3Sum | Two Pointers & Pruning | Medium | $O(N^2)$ | $O(1)$ |
+| 020 | Valid Parentheses | Stack LIFO Invariants | Easy | $O(N)$ | $O(N)$ |
+| 023 | Merge k Sorted Lists | Min-Heap Priority Queue | Hard | $O(N \log k)$ | $O(k)$ |
+| 025 | Reverse Nodes in k-Group | Iterative Pointer Reversal | Hard | $O(N)$ | $O(1)$ |
+| 032 | Longest Valid Parentheses | Two-Pass Counter Scan | Hard | $O(N)$ | $O(1)$ |
+| 033 | Search in Rotated Sorted Array | Modified Binary Search | Medium | $O(\log N)$ | $O(1)$ |
+| 041 | First Missing Positive | In-Place Cyclic Sort | Hard | $O(N)$ | $O(1)$ |
+| 042 | Trapping Rain Water II | Min-Heap Boundary Flow | Hard | $O(M N \log(MN))$ | $O(MN)$ |
+| 044 | Wildcard Matching | Greedy Star Checkpoint | Hard | $O(N)$ avg | $O(1)$ |
+| 051 | N-Queens | Bitmask Backtracking | Hard | $O(N!)$ | $O(N)$ |
+| 072 | Edit Distance | 1D Rolling DP | Hard | $O(MN)$ | $O(N)$ |
+| 076 | Minimum Window Substring | Sliding Window | Hard | $O(M + N)$ | $O(K)$ |
+| 084 | Largest Rectangle in Histogram | Monotonic Increasing Stack | Hard | $O(N)$ | $O(N)$ |
+| 098 | Validate Binary Search Tree | Min/Max Range Bounds | Medium | $O(N)$ | $O(H)$ |
+| 121 | Best Time to Buy and Sell Stock | Kadane's Accumulator | Easy | $O(N)$ | $O(1)$ |
+| 124 | Binary Tree Maximum Path Sum | Post-Order Tree DP | Hard | $O(N)$ | $O(H)$ |
+| 127 | Word Ladder | Bidirectional BFS | Hard | $O(M^2 N)$ | $O(MN)$ |
+| 128 | Longest Consecutive Sequence | Hash Set Root Scan | Medium | $O(N)$ | $O(N)$ |
+| 146 | LRU Cache | Doubly Linked List + Map | Medium | $O(1)$ | $O(C)$ |
+| 198 | House Robber | Space-Optimized DP | Medium | $O(N)$ | $O(1)$ |
+| 200 | Number of Islands | Disjoint Set Union / BFS | Medium | $O(M \times N)$ | $O(M \times N)$ |
+| 206 | Reverse Linked List | Iterative Pointer Swap | Easy | $O(N)$ | $O(1)$ |
+| 207 | Course Schedule | Kahn's Topological Sort | Medium | $O(V + E)$ | $O(V + E)$ |
+| 212 | Word Search II | Trie 2D Backtracking | Hard | $O(MN 4^L)$ | $O(\Sigma L)$ |
+| 218 | The Skyline Problem | Critical Point Line Sweep | Hard | $O(N \log N)$ | $O(N)$ |
+| 238 | Product of Array Except Self | Prefix/Suffix Accumulators | Medium | $O(N)$ | $O(1)$ |
+| 239 | Sliding Window Maximum | Monotonic Decreasing Deque | Hard | $O(N)$ | $O(K)$ |
+| 295 | Find Median from Data Stream | Dual Heaps Balancing | Hard | $O(\log N)$ | $O(N)$ |
+| 297 | Serialize and Deserialize Binary Tree | Pre-Order String Tokens | Hard | $O(N)$ | $O(N)$ |
+| 300 | Longest Increasing Subsequence | Patience Sorting Binary Search | Medium | $O(N \log N)$ | $O(N)$ |
+| 312 | Burst Balloons | Reverse Interval DP | Hard | $O(N^3)$ | $O(N^2)$ |
+| 315 | Count of Smaller Numbers After Self | Modified Merge Sort | Hard | $O(N \log N)$ | $O(N)$ |
+| 329 | Longest Increasing Path in Matrix | Memoized DAG DFS | Hard | $O(MN)$ | $O(MN)$ |
+| 875 | Koko Eating Bananas | Monotonic Binary Search | Medium | $O(N \log(\max P))$ | $O(1)$ |
