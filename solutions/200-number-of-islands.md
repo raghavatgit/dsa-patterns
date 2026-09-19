@@ -1,93 +1,84 @@
-# Problem: Number of Islands
+# Problem: Number of Islands (Disjoint Set Union)
 
 ## Problem Statement
 Given an `m x n` 2D binary grid `grid` which represents a map of `'1'`s (land) and `'0'`s (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically.
 
 ## Intuition & Approach
-Traverse each cell `(r, c)`. When land `'1'` is encountered:
-1. Increment island counter.
-2. Initiate Depth-First Search (DFS) to traverse all 4-directional connected land cells.
-3. Sink visited land cells in-place to `'0'` to avoid re-visitation without extra memory.
+Disjoint Set Union (Union-Find) with Rank and Path Compression:
+1. Map 2D grid coordinates `(r, c)` to 1D identifier: `id = r * n + c`.
+2. Count initial land cells `island_count`.
+3. Scan grid: when encountering land `'1'`, check right neighbour `(r, c + 1)` and bottom neighbour `(r + 1, c)`.
+4. If neighbour is also land, union the two sets. If they were previously in distinct sets, decrement `island_count`.
+5. Path compression flattens tree during `find()`, union by rank balances tree height: amortized $O(\alpha(N))$ nearly $O(1)$ per operation.
+6. Time Complexity: $O(M \times N \times \alpha(M \times N))$. Space Complexity: $O(M \times N)$ parent array.
 
 ## TypeScript Implementation
 
 ```typescript
-export function numIslands(grid: string[][]): number {
-  if (grid.length === 0) return 0;
+class DSU {
+  parent: number[];
+  rank: number[];
+  count: number;
 
-  const rows = grid.length;
-  const cols = grid[0].length;
-  let count = 0;
-
-  function dfs(r: number, c: number) {
-    if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] !== '1') {
-      return;
-    }
-
-    grid[r][c] = '0'; // Sink land cell
-
-    dfs(r - 1, c); // Up
-    dfs(r + 1, c); // Down
-    dfs(r, c - 1); // Left
-    dfs(r, c + 1); // Right
+  constructor(n: number, initialLand: number) {
+    this.parent = Array.from({ length: n }, (_, i) => i);
+    this.rank = new Array(n).fill(0);
+    this.count = initialLand;
   }
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (grid[r][c] === '1') {
-        count++;
-        dfs(r, c);
+  find(i: number): number {
+    if (this.parent[i] === i) return i;
+    this.parent[i] = this.find(this.parent[i]);
+    return this.parent[i];
+  }
+
+  union(i: number, j: number): boolean {
+    const rootI = this.find(i);
+    const rootJ = this.find(j);
+    if (rootI === rootJ) return false;
+
+    if (this.rank[rootI] < this.rank[rootJ]) {
+      this.parent[rootI] = rootJ;
+    } else if (this.rank[rootI] > this.rank[rootJ]) {
+      this.parent[rootJ] = rootI;
+    } else {
+      this.parent[rootJ] = rootI;
+      this.rank[rootI]++;
+    }
+
+    this.count--;
+    return true;
+  }
+}
+
+export function numIslands(grid: string[][]): number {
+  const m = grid.length;
+  if (m === 0) return 0;
+  const n = grid[0].length;
+
+  let landCount = 0;
+  for (let r = 0; r < m; r++) {
+    for (let c = 0; c < n; c++) {
+      if (grid[r][c] === "1") landCount++;
+    }
+  }
+
+  const dsu = new DSU(m * n, landCount);
+
+  for (let r = 0; r < m; r++) {
+    for (let c = 0; c < n; c++) {
+      if (grid[r][c] === "1") {
+        const id = r * n + c;
+        if (r + 1 < m && grid[r + 1][c] === "1") {
+          dsu.union(id, (r + 1) * n + c);
+        }
+        if (c + 1 < n && grid[r][c + 1] === "1") {
+          dsu.union(id, r * n + (c + 1));
+        }
       }
     }
   }
 
-  return count;
+  return dsu.count;
 }
 ```
-
-## Rust Implementation
-
-```rust
-pub fn num_islands(mut grid: Vec<Vec<char>>) -> i32 {
-    if grid.is_empty() {
-        return 0;
-    }
-
-    let rows = grid.len();
-    let cols = grid[0].len();
-    let mut count = 0;
-
-    fn dfs(grid: &mut [Vec<char>], r: usize, c: usize, rows: usize, cols: usize) {
-        grid[r][c] = '0';
-
-        let directions = [(-1, 0), (1, 0), (0, -1), (0, 1)];
-        for (dr, dc) in directions {
-            let nr = r as isize + dr;
-            let nc = c as isize + dc;
-
-            if nr >= 0 && nr < rows as isize && nc >= 0 && nc < cols as isize {
-                let ur = nr as usize;
-                let uc = nc as usize;
-                if grid[ur][uc] == '1' {
-                    dfs(grid, ur, uc, rows, cols);
-                }
-            }
-        }
-    }
-
-    for r in 0..rows {
-        for c in 0..cols {
-            if grid[r][c] == '1' {
-                count += 1;
-                dfs(&mut grid, r, c, rows, cols);
-            }
-        }
-    }
-
-    count
-}
-```
-
-## Complexity Analysis
-* **Time Complexity:** O(M * N) where every cell is visited at most twice.
-* **Space Complexity:** O(M * N) worst case recursion stack depth for complete land grids.
