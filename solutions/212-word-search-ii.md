@@ -1,82 +1,75 @@
-# Problem: Word Search II (Trie Backtracking)
+# Problem 212: Word Search II
 
 ## Problem Statement
-Given an `m x n` `board` of characters and a list of strings `words`, return all words on the board. Each word must be constructed from letters of sequentially adjacent cells (horizontally or vertically neighboring). The same letter cell may not be used more than once in a word.
+Given an `m x n` `board` of characters and a list of strings `words`, return all words on the board.
 
-## Intuition & Approach
-Trie-Guided Depth First Search:
-1. Insert all dictionary words into a Trie. Store the complete word at the terminal node to eliminate string concatenation overhead.
-2. Iterate through each cell `(r, c)` of the board. If the character exists in the Trie root, start DFS exploration.
-3. DFS Backtracking:
-   - Save current cell character and replace with '#' to mark visited in-place (saving $O(M \times N)$ auxiliary space).
-   - If current Trie node contains a finished word, add it to results and set `node.word = null` to prevent duplicate captures.
-   - Traverse 4 adjacent neighbours matching children of current Trie node.
-   - Restore cell character upon backtracking.
-4. Pruning optimization: When a leaf node is consumed, prune it from its parent to prevent redundant paths.
-5. Time Complexity: $O(M \times N \times 4 \times 3^{L-1})$ where $L$ is maximum word length. Space Complexity: $O(\sum \text{len}(words))$ for Trie storage.
+## Optimization
+1. Insert all `words` into a Trie. Store the full word at the leaf node to avoid string reconstruction.
+2. Backtrack over 2D grid. Prune branches immediately when grid character is not in current Trie node's children.
+3. Once a word is matched, set node word reference to null to avoid duplicates and prune leaf.
 
-## TypeScript Implementation
+## Complexity
+- Time: $O(M \times N \times 4^{L})$ bounded strictly by Trie depth.
+- Space: $O(\sum |words|)$ for Trie.
 
-```typescript
-class TrieNode {
-  children: Map<string, TrieNode> = new Map();
-  word: string | null = null;
-}
+## C++ Implementation
+```cpp
+#include <vector>
+#include <string>
 
-export function findWords(board: string[][], words: string[]): string[] {
-  const root = new TrieNode();
+struct TrieNode {
+    TrieNode* children[26] = {nullptr};
+    std::string word = "";
+};
 
-  for (const w of words) {
-    let node = root;
-    for (const ch of w) {
-      if (!node.children.has(ch)) {
-        node.children.set(ch, new TrieNode());
-      }
-      node = node.children.get(ch)!;
-    }
-    node.word = w;
-  }
-
-  const results: string[] = [];
-  const m = board.length;
-  const n = board[0].length;
-
-  function dfs(r: number, c: number, parent: TrieNode) {
-    const ch = board[r][c];
-    const currNode = parent.children.get(ch);
-    if (!currNode) return;
-
-    if (currNode.word !== null) {
-      results.push(currNode.word);
-      currNode.word = null;
+class Solution {
+    void insert(TrieNode* root, const std::string& word) {
+        TrieNode* curr = root;
+        for (char c : word) {
+            int idx = c - 'a';
+            if (!curr->children[idx]) curr->children[idx] = new TrieNode();
+            curr = curr->children[idx];
+        }
+        curr->word = word;
     }
 
-    board[r][c] = "#";
+    void dfs(std::vector<std::vector<char>>& board, int r, int c, TrieNode* node, std::vector<std::string>& result) {
+        char ch = board[r][c];
+        if (ch == '#' || !node->children[ch - 'a']) return;
 
-    const dirs = [[0, 1], [0, -1], [1, 0], [-1, 0]];
-    for (const [dr, dc] of dirs) {
-      const nr = r + dr;
-      const nc = c + dc;
-      if (nr >= 0 && nr < m && nc >= 0 && nc < n && board[nr][nc] !== "#") {
-        dfs(nr, nc, currNode);
-      }
+        node = node->children[ch - 'a'];
+        if (!node->word.empty()) {
+            result.push_back(node->word);
+            node->word.clear(); // Avoid duplicates
+        }
+
+        board[r][c] = '#';
+        static const int dr[] = {-1, 1, 0, 0};
+        static const int dc[] = {0, 0, -1, 1};
+
+        for (int i = 0; i < 4; ++i) {
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if (nr >= 0 && nr < static_cast<int>(board.size()) &&
+                nc >= 0 && nc < static_cast<int>(board[0].size())) {
+                dfs(board, nr, nc, node, result);
+            }
+        }
+        board[r][c] = ch;
     }
 
-    board[r][c] = ch;
+public:
+    std::vector<std::string> findWords(std::vector<std::vector<char>>& board, const std::vector<std::string>& words) {
+        TrieNode* root = new TrieNode();
+        for (const auto& w : words) insert(root, w);
 
-    if (currNode.children.size === 0) {
-      parent.children.delete(ch);
+        std::vector<std::string> result;
+        for (int r = 0; r < static_cast<int>(board.size()); ++r) {
+            for (int c = 0; c < static_cast<int>(board[0].size()); ++c) {
+                dfs(board, r, c, root, result);
+            }
+        }
+        return result;
     }
-  }
-
-  for (let r = 0; r < m; r++) {
-    for (let c = 0; c < n; c++) {
-      if (root.children.has(board[r][c])) {
-        dfs(r, c, root);
-      }
-    }
-  }
-
-  return results;
-}
+};
 ```
