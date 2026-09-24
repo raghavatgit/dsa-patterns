@@ -1,84 +1,45 @@
-# Problem: Trapping Rain Water
+# Problem 042: Trapping Rain Water
 
 ## Problem Statement
 Given `n` non-negative integers representing an elevation map where the width of each bar is `1`, compute how much water it can trap after raining.
 
-## Intuition & Approach
-The water trapped on top of any bar `i` is determined by `min(maxLeft, maxRight) - height[i]`. Using two converging pointers from the outer ends inward:
-* If `height[left] < height[right]`: Water level at `left` is strictly bounded by `maxLeft` because a taller barrier exists to its right.
-* Update `maxLeft` or accumulate trapped water, then advance `left`.
-* Mirror logic for `right`.
+## Two-Pointer Approach
+Water trapped at position `i` is determined by $\min(\text{max\_left}, \text{max\_right}) - height[i]$.
+By comparing `left_max` and `right_max`, the side with the smaller max bound is the bottleneck and can be resolved immediately without knowing the exact shape on the other side.
 
-## TypeScript Implementation
+## Complexity
+- Time Complexity: $O(N)$
+- Space Complexity: $O(1)$
 
-```typescript
-export function trap(height: number[]): number {
-  if (height.length === 0) return 0;
+## C++ Implementation
+```cpp
+#include <vector>
+#include <algorithm>
 
-  let left = 0;
-  let right = height.length - 1;
-  let maxLeft = 0;
-  let maxRight = 0;
-  let totalWater = 0;
+int trap(const std::vector<int>& height) {
+    if (height.empty()) return 0;
 
-  while (left < right) {
-    if (height[left] <= height[right]) {
-      if (height[left] >= maxLeft) {
-        maxLeft = height[left];
-      } else {
-        totalWater += maxLeft - height[left];
-      }
-      left++;
-    } else {
-      if (height[right] >= maxRight) {
-        maxRight = height[right];
-      } else {
-        totalWater += maxRight - height[right];
-      }
-      right--;
-    }
-  }
+    int left = 0, right = static_cast<int>(height.size()) - 1;
+    int left_max = 0, right_max = 0;
+    int total_water = 0;
 
-  return totalWater;
-}
-```
-
-## Rust Implementation
-
-```rust
-pub fn trap(height: &[i32]) -> i32 {
-    if height.is_empty() {
-        return 0;
-    }
-
-    let mut left = 0;
-    let mut right = height.len() - 1;
-    let mut max_left = 0;
-    let mut max_right = 0;
-    let mut total_water = 0;
-
-    while left < right {
-        if height[left] <= height[right] {
-            if height[left] >= max_left {
-                max_left = height[left];
+    while (left < right) {
+        if (height[left] <= height[right]) {
+            if (height[left] >= left_max) {
+                left_max = height[left];
             } else {
-                total_water += max_left - height[left];
+                total_water += left_max - height[left];
             }
-            left += 1;
+            ++left;
         } else {
-            if height[right] >= max_right {
-                max_right = height[right];
+            if (height[right] >= right_max) {
+                right_max = height[right];
             } else {
-                total_water += max_right - height[right];
+                total_water += right_max - height[right];
             }
-            right -= 1;
+            --right;
         }
     }
-
-    total_water
+    return total_water;
 }
 ```
-
-## Complexity Analysis
-* **Time Complexity:** O(N) single pass visiting each bar index once.
-* **Space Complexity:** O(1) constant auxiliary space.
