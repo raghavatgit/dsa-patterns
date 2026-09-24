@@ -1,88 +1,40 @@
-# Problem: Edit Distance (Levenshtein Distance)
+# Problem 072: Edit Distance
 
 ## Problem Statement
-Given two strings `word1` and `word2`, return the minimum number of operations required to convert `word1` to `word2`. You have the following three operations permitted on a word:
-- Insert a character
-- Delete a character
-- Replace a character
+Given two strings `word1` and `word2`, return the minimum number of operations required to convert `word1` to `word2`. Permitted operations: Insert, Delete, Replace.
 
-## Intuition & Approach
-Dynamic Programming with Space Optimization:
-1. Let `dp[i][j]` denote the minimum edit distance to transform prefix `word1[0..i]` into `word2[0..j]`.
-2. Base cases:
-   - `dp[0][j] = j` (insert $j$ characters)
-   - `dp[i][0] = i` (delete $i$ characters)
-3. Transitions:
-   - If `word1[i - 1] == word2[j - 1]`: `dp[i][j] = dp[i - 1][j - 1]`
-   - Otherwise: `dp[i][j] = 1 + min(dp[i - 1][j] (delete), dp[i][j - 1] (insert), dp[i - 1][j - 1] (replace))`
-4. Space Optimization: Since row `i` depends exclusively on row `i - 1`, we reduce memory from $O(M \times N)$ to a single 1D array of size $O(N)$ with a `prev_diagonal` scalar.
-5. Time Complexity: $O(M \times N)$. Space Complexity: $O(N)$ auxiliary storage.
+## Recurrence
+$$dp[i][j] = \begin{cases} dp[i - 1][j - 1] & \text{if } word1[i - 1] == word2[j - 1] \\ 1 + \min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) & \text{otherwise} \end{cases}$$
 
-## TypeScript Implementation
+## Complexity
+- Time: $O(M \times N)$
+- Space: $O(N)$ with row rolling.
 
-```typescript
-export function minDistance(word1: string, word2: string): number {
-  const m = word1.length;
-  const n = word2.length;
+## C++ Implementation
+```cpp
+#include <string>
+#include <vector>
+#include <algorithm>
 
-  const dp: number[] = Array.from({ length: n + 1 }, (_, j) => j);
+int minDistance(const std::string& word1, const std::string& word2) {
+    int m = word1.length(), n = word2.length();
+    std::vector<int> dp(n + 1);
 
-  for (let i = 1; i <= m; i++) {
-    let prev = dp[0];
-    dp[0] = i;
+    for (int j = 0; j <= n; ++j) dp[j] = j;
 
-    for (let j = 1; j <= n; j++) {
-      const temp = dp[j];
-      if (word1[i - 1] === word2[j - 1]) {
-        dp[j] = prev;
-      } else {
-        dp[j] = 1 + Math.min(dp[j], dp[j - 1], prev);
-      }
-      prev = temp;
-    }
-  }
-
-  return dp[n];
-}
-```
-
-## Rust Implementation
-
-```rust
-pub fn min_distance(word1: String, word2: String) -> i32 {
-    let w1: Vec<char> = word1.chars().collect();
-    let w2: Vec<char> = word2.chars().collect();
-    let m = w1.len();
-    let n = w2.len();
-
-    let mut dp: Vec<i32> = (0..=n as i32).collect();
-
-    for i in 1..=m {
-        let mut prev = dp[0];
-        dp[0] = i as i32;
-
-        for j in 1..=n {
-            let temp = dp[j];
-            if w1[i - 1] == w2[j - 1] {
+    for (int i = 1; i <= m; ++i) {
+        int prev = dp[0];
+        dp[0] = i;
+        for (int j = 1; j <= n; ++j) {
+            int temp = dp[j];
+            if (word1[i - 1] == word2[j - 1]) {
                 dp[j] = prev;
             } else {
-                dp[j] = 1 + dp[j].min(dp[j - 1]).min(prev);
+                dp[j] = 1 + std::min({dp[j], dp[j - 1], prev});
             }
             prev = temp;
         }
     }
-
-    dp[n]
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_min_distance() {
-        assert_eq!(min_distance("horse".to_string(), "ros".to_string()), 3);
-        assert_eq!(min_distance("intention".to_string(), "execution".to_string()), 5);
-    }
+    return dp[n];
 }
 ```
