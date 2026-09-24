@@ -1,68 +1,54 @@
-# Problem: Serialize and Deserialize Binary Tree
+# Problem 297: Serialize and Deserialize Binary Tree
 
 ## Problem Statement
-Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment. Design an algorithm to serialize and deserialize a binary tree.
+Design an algorithm to serialize and deserialize a binary tree.
 
-## Intuition & Approach
-Pre-order Depth First Search with Sentinel Null Tokens:
-1. **Serialization**:
-   - Traverse the tree in pre-order (`Root -> Left -> Right`).
-   - If the current node is null, append sentinel token `"#"`.
-   - Otherwise, append `node.val` followed by delimiter `","`.
-2. **Deserialization**:
-   - Split serialized string by delimiter into a queue of tokens.
-   - Recursively construct nodes:
-     - Pop token. If token is `"#"`, return null.
-     - Create new `TreeNode(Number(token))`.
-     - Recursively build left child, then right child.
-3. Time Complexity: $O(N)$ for both serialization and deserialization. Space Complexity: $O(N)$ recursion depth and token buffer.
+## Approach
+Preorder traversal with sentinel `#` for null pointers.
+- Serialization: Preorder DFS outputting comma-separated values.
+- Deserialization: Tokenize stream, recursively reconstruct left and right subtrees.
 
-## TypeScript Implementation
+## Complexity
+- Time: $O(N)$
+- Space: $O(N)$
 
-```typescript
-export class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-  constructor(val: number = 0, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
+## C++ Implementation
+```cpp
+#include <string>
+#include <sstream>
 
-export function serialize(root: TreeNode | null): string {
-  const tokens: string[] = [];
-
-  function dfs(node: TreeNode | null) {
-    if (node === null) {
-      tokens.push("#");
-      return;
+class Codec {
+    void serializeDFS(TreeNode* root, std::ostringstream& out) {
+        if (!root) {
+            out << "#,";
+            return;
+        }
+        out << root->val << ",";
+        serializeDFS(root->left, out);
+        serializeDFS(root->right, out);
     }
-    tokens.push(String(node.val));
-    dfs(node.left);
-    dfs(node.right);
-  }
 
-  dfs(root);
-  return tokens.join(",");
-}
+    TreeNode* deserializeDFS(std::istringstream& in) {
+        std::string val;
+        if (!std::getline(in, val, ',')) return nullptr;
+        if (val == "#") return nullptr;
 
-export function deserialize(data: string): TreeNode | null {
-  const tokens = data.split(",");
-  let idx = 0;
+        TreeNode* node = new TreeNode(std::stoi(val));
+        node->left = deserializeDFS(in);
+        node->right = deserializeDFS(in);
+        return node;
+    }
 
-  function build(): TreeNode | null {
-    if (idx >= tokens.length) return null;
-    const valStr = tokens[idx++];
-    if (valStr === "#") return null;
+public:
+    std::string serialize(TreeNode* root) {
+        std::ostringstream out;
+        serializeDFS(root, out);
+        return out.str();
+    }
 
-    const node = new TreeNode(Number(valStr));
-    node.left = build();
-    node.right = build();
-    return node;
-  }
-
-  return build();
-}
+    TreeNode* deserialize(const std::string& data) {
+        std::istringstream in(data);
+        return deserializeDFS(in);
+    }
+};
 ```
