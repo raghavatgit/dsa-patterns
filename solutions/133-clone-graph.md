@@ -1,48 +1,40 @@
-# Problem: Clone Graph
+# Problem 133: Clone Graph
 
 ## Problem Statement
-Given a reference of a node in a connected undirected graph, return a deep copy (clone) of the graph. Each node in the graph contains a value (`int`) and a list (`List[Node]`) of its neighbors.
+Given a reference of a node in a connected undirected graph. Return a deep copy (clone) of the graph.
 
-## Intuition & Approach
-Depth First Search with Map Pointer Memoization:
-1. Maintain a Hash Map mapping `original_node -> cloned_node` to prevent infinite loops on cyclical graphs and duplicate node instantiation.
-2. If current node is null, return null.
-3. If current node already exists in map, return the cached cloned node immediately.
-4. Otherwise, instantiate a new node with `original.val`, record it in map, and recursively clone all neighbours.
-5. Time Complexity: $O(V + E)$ visiting every vertex and edge once. Space Complexity: $O(V)$ hash map and recursion stack.
+## Complexity
+- Time: $O(V + E)$
+- Space: $O(V)$ hash map and call stack
 
-## TypeScript Implementation
+## C++ Implementation
+```cpp
+#include <vector>
+#include <unordered_map>
 
-```typescript
-export class Node {
-  val: number;
-  neighbors: Node[];
-  constructor(val: number = 0, neighbors: Node[] = []) {
-    this.val = val;
-    this.neighbors = neighbors;
-  }
-}
+class Node {
+public:
+    int val;
+    std::vector<Node*> neighbors;
+    Node() : val(0) {}
+    Node(int _val) : val(_val) {}
+};
 
-export function cloneGraph(node: Node | null): Node | null {
-  if (node === null) return null;
+class Solution {
+    std::unordered_map<Node*, Node*> visited;
 
-  const visited = new Map<Node, Node>();
+public:
+    Node* cloneGraph(Node* node) {
+        if (!node) return nullptr;
+        if (visited.count(node)) return visited[node];
 
-  function dfs(curr: Node): Node {
-    if (visited.has(curr)) {
-      return visited.get(curr)!;
+        Node* clone = new Node(node->val);
+        visited[node] = clone;
+
+        for (Node* neighbor : node->neighbors) {
+            clone->neighbors.push_back(cloneGraph(neighbor));
+        }
+        return clone;
     }
-
-    const copy = new Node(curr.val);
-    visited.set(curr, copy);
-
-    for (const neighbor of curr.neighbors) {
-      copy.neighbors.push(dfs(neighbor));
-    }
-
-    return copy;
-  }
-
-  return dfs(node);
-}
+};
 ```
