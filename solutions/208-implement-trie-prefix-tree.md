@@ -1,111 +1,68 @@
-# Problem: Implement Trie (Prefix Tree)
+# Problem 208: Implement Trie (Prefix Tree)
 
 ## Problem Statement
-A trie (pronounced as "try") or prefix tree is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. Implement the `Trie` class with `insert(word)`, `search(word)`, and `startsWith(prefix)` methods.
+A trie (pronounced as 'try') or prefix tree is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. Implement the `Trie` class supporting `insert`, `search`, and `startsWith`.
 
-## Intuition & Approach
-Array-Backed 26-Way Node Structure:
-1. Each node contains an array `children` of 26 pointers for lowercase English letters 'a' through 'z', and a boolean flag `is_end`.
-2. `insert(word)`: Traverse character by character. If child pointer at index `ch - 'a'` is null, instantiate a new node. Mark terminal node `is_end = true`.
-3. `search(word)`: Traverse character by character. If any pointer is null, return `false`. Return `node.is_end` at the terminus.
-4. `startsWith(prefix)`: Traverse prefix. If all characters exist, return `true`.
-5. Time Complexity: $O(L)$ for each operation, where $L$ is word length. Space Complexity: $O(\Sigma \times N \times L)$ for node allocations.
+## Complexity
+- Insert: $O(L)$ time, $O(L)$ space where $L$ is word length.
+- Search: $O(L)$ time, $O(1)$ auxiliary space.
+- StartsWith: $O(L)$ time, $O(1)$ auxiliary space.
 
-## TypeScript Implementation
+## C++ Implementation
+```cpp
+#include <string>
+#include <vector>
+#include <memory>
 
-```typescript
-class TrieNode {
-  children: (TrieNode | null)[] = new Array(26).fill(null);
-  isEnd: boolean = false;
-}
+class Trie {
+private:
+    struct TrieNode {
+        TrieNode* children[26] = {nullptr};
+        bool is_end_of_word = false;
 
-export class Trie {
-  private root: TrieNode = new TrieNode();
-
-  insert(word: string): void {
-    let curr = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const idx = word.charCodeAt(i) - 97;
-      if (!curr.children[idx]) {
-        curr.children[idx] = new TrieNode();
-      }
-      curr = curr.children[idx]!;
-    }
-    curr.isEnd = true;
-  }
-
-  search(word: string): boolean {
-    let curr = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const idx = word.charCodeAt(i) - 97;
-      if (!curr.children[idx]) return false;
-      curr = curr.children[idx]!;
-    }
-    return curr.isEnd;
-  }
-
-  startsWith(prefix: string): boolean {
-    let curr = this.root;
-    for (let i = 0; i < prefix.length; i++) {
-      const idx = prefix.charCodeAt(i) - 97;
-      if (!curr.children[idx]) return false;
-      curr = curr.children[idx]!;
-    }
-    return true;
-  }
-}
-```
-
-## Rust Implementation
-
-```rust
-#[derive(Default)]
-pub struct TrieNode {
-    children: [Option<Box<TrieNode>>; 26],
-    is_end: bool,
-}
-
-#[derive(Default)]
-pub struct Trie {
-    root: TrieNode,
-}
-
-impl Trie {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    pub fn insert(&mut self, word: String) {
-        let mut curr = &mut self.root;
-        for b in word.bytes() {
-            let idx = (b - b'a') as usize;
-            curr = curr.children[idx].get_or_insert_with(Box::default);
-        }
-        curr.is_end = true;
-    }
-
-    pub fn search(&self, word: String) -> bool {
-        let mut curr = &self.root;
-        for b in word.bytes() {
-            let idx = (b - b'a') as usize;
-            match &curr.children[idx] {
-                Some(next) => curr = next,
-                None => return false,
+        ~TrieNode() {
+            for (int i = 0; i < 26; ++i) {
+                delete children[i];
             }
         }
-        curr.is_end
+    };
+
+    TrieNode* root;
+
+public:
+    Trie() : root(new TrieNode()) {}
+    ~Trie() { delete root; }
+
+    void insert(const std::string& word) {
+        TrieNode* curr = root;
+        for (char c : word) {
+            int idx = c - 'a';
+            if (!curr->children[idx]) {
+                curr->children[idx] = new TrieNode();
+            }
+            curr = curr->children[idx];
+        }
+        curr->is_end_of_word = true;
     }
 
-    pub fn starts_with(&self, prefix: String) -> bool {
-        let mut curr = &self.root;
-        for b in prefix.bytes() {
-            let idx = (b - b'a') as usize;
-            match &curr.children[idx] {
-                Some(next) => curr = next,
-                None => return false,
-            }
+    bool search(const std::string& word) const {
+        TrieNode* curr = root;
+        for (char c : word) {
+            int idx = c - 'a';
+            if (!curr->children[idx]) return false;
+            curr = curr->children[idx];
         }
-        true
+        return curr->is_end_of_word;
     }
-}
+
+    bool startsWith(const std::string& prefix) const {
+        TrieNode* curr = root;
+        for (char c : prefix) {
+            int idx = c - 'a';
+            if (!curr->children[idx]) return false;
+            curr = curr->children[idx];
+        }
+        return true;
+    }
+};
 ```
