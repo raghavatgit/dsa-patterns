@@ -1,32 +1,31 @@
-# Problem: Diameter of Binary Tree
+# Problem 543: Diameter of Binary Tree
 
 ## Problem Statement
-Given the root of a binary tree, return the length of the diameter of the tree. The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
+Given the root of a binary tree, return the length of the diameter of the tree. The diameter of a binary tree is the length of the longest path between any two nodes in a tree.
 
-## Intuition & Approach
-Post-Order Depth DFS with Global Maxima Tracking:
-1. At each node, longest path turning at this node has length `depth(left) + depth(right)`.
-2. Update global `max_diameter = max(max_diameter, depth(left) + depth(right))`.
-3. Return `1 + max(depth(left), depth(right))` to caller.
-4. Time Complexity: $O(N)$ single pass. Space Complexity: $O(H)$ recursion depth.
+## Complexity
+- Time: $O(N)$
+- Space: $O(H)$
 
-## TypeScript Implementation
+## C++ Implementation
+```cpp
+#include <algorithm>
 
-```typescript
-export function diameterOfBinaryTree(root: TreeNode | null): number {
-  let diameter = 0;
+class Solution {
+    int max_diameter = 0;
 
-  function depth(node: TreeNode | null): number {
-    if (node === null) return 0;
+    int depth(TreeNode* node) {
+        if (!node) return 0;
+        int left = depth(node->left);
+        int right = depth(node->right);
+        max_diameter = std::max(max_diameter, left + right);
+        return 1 + std::max(left, right);
+    }
 
-    const leftDepth = depth(node.left);
-    const rightDepth = depth(node.right);
-
-    diameter = Math.max(diameter, leftDepth + rightDepth);
-    return 1 + Math.max(leftDepth, rightDepth);
-  }
-
-  depth(root);
-  return diameter;
-}
+public:
+    int diameterOfBinaryTree(TreeNode* root) {
+        depth(root);
+        return max_diameter;
+    }
+};
 ```
