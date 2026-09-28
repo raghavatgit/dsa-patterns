@@ -1,31 +1,44 @@
-# Problem 543: Diameter of Binary Tree
-
-## Problem Statement
-Given the root of a binary tree, return the length of the diameter of the tree. The diameter of a binary tree is the length of the longest path between any two nodes in a tree.
+# 543. Diameter of Binary Tree
 
 ## Complexity
-- Time: $O(N)$
-- Space: $O(H)$
+- Time Complexity: O(n)
+- Space Complexity: O(h)
 
-## C++ Implementation
-```cpp
-#include <algorithm>
+## Rust Implementation
+```rust
+pub fn diameter_of_binary_tree(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    let mut diameter = 0;
 
-class Solution {
-    int max_diameter = 0;
+    fn depth(node: Option<Rc<RefCell<TreeNode>>>, diameter: &mut i32) -> i32 {
+        let node = match node {
+            Some(n) => n,
+            None => return 0,
+        };
+        let b = node.borrow();
+        let left = depth(b.left.clone(), diameter);
+        let right = depth(b.right.clone(), diameter);
 
-    int depth(TreeNode* node) {
+        *diameter = std::cmp::max(*diameter, left + right);
+        1 + std::cmp::max(left, right)
+    }
+
+    depth(root, &mut diameter);
+    diameter
+}
+```
+
+## TypeScript Implementation
+```typescript
+export function diameterOfBinaryTree(root: TreeNode | null): number {
+    let diameter = 0;
+    const depth = (node: TreeNode | null): number => {
         if (!node) return 0;
-        int left = depth(node->left);
-        int right = depth(node->right);
-        max_diameter = std::max(max_diameter, left + right);
-        return 1 + std::max(left, right);
-    }
-
-public:
-    int diameterOfBinaryTree(TreeNode* root) {
-        depth(root);
-        return max_diameter;
-    }
-};
+        const left = depth(node.left);
+        const right = depth(node.right);
+        diameter = Math.max(diameter, left + right);
+        return 1 + Math.max(left, right);
+    };
+    depth(root);
+    return diameter;
+}
 ```
