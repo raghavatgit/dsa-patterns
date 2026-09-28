@@ -1,49 +1,40 @@
-# Problem 1584: Min Cost to Connect All Points
-
-## Problem Statement
-You are given an array `points` representing integer coordinates of some points on a 2D-plane, where `points[i] = [xi, yi]`. Return the minimum cost to make all points connected using Manhattan distance.
-
-## Prim's MST Approach
-Maintain minimum distance to unvisited nodes from visited component.
-Iterate $N$ times, greedily picking node with smallest cost, then relax all remaining unvisited nodes.
+# 1584. Min Cost to Connect All Points
 
 ## Complexity
-- Time: $O(N^2)$ optimal for dense complete graphs.
-- Space: $O(N)$
+- Time Complexity: O(V^2)
+- Space Complexity: O(V)
 
-## C++ Implementation
-```cpp
-#include <vector>
-#include <cmath>
-#include <algorithm>
-#include <climits>
+## Rust Implementation
+```rust
+pub fn min_cost_connect_points(points: Vec<Vec<i32>>) -> i32 {
+    let n = points.len();
+    let mut min_cost = vec![i32::MAX; n];
+    let mut visited = vec![false; n];
+    min_cost[0] = 0;
+    let mut total = 0;
 
-int minCostConnectPoints(const std::vector<std::vector<int>>& points) {
-    int n = points.size();
-    std::vector<int> min_dist(n, INT_MAX);
-    std::vector<bool> in_mst(n, false);
-
-    min_dist[0] = 0;
-    int total_cost = 0;
-
-    for (int step = 0; step < n; ++step) {
-        int u = -1;
-        for (int i = 0; i < n; ++i) {
-            if (!in_mst[i] && (u == -1 || min_dist[i] < min_dist[u])) {
-                u = i;
+    for _ in 0..n {
+        let mut u = None;
+        for i in 0..n {
+            if !visited[i] && (u.is_none() || min_cost[i] < min_cost[u.unwrap()]) {
+                u = Some(i);
             }
         }
 
-        in_mst[u] = true;
-        total_cost += min_dist[u];
+        let u = u.unwrap();
+        visited[u] = true;
+        total += min_cost[u];
 
-        for (int v = 0; v < n; ++v) {
-            if (!in_mst[v]) {
-                int dist = std::abs(points[u][0] - points[v][0]) + std::abs(points[u][1] - points[v][1]);
-                min_dist[v] = std::min(min_dist[v], dist);
+        for v in 0..n {
+            if !visited[v] {
+                let dist = (points[u][0] - points[v][0]).abs() + (points[u][1] - points[v][1]).abs();
+                if dist < min_cost[v] {
+                    min_cost[v] = dist;
+                }
             }
         }
     }
-    return total_cost;
+
+    total
 }
 ```
