@@ -1,44 +1,64 @@
-# Problem 200: Number of Islands
-
-## Problem Statement
-Given an `m x n` 2D binary grid `grid` which represents a map of `'1'`s (land) and `'0'`s (water), return the number of islands.
-
-## Approach
-Iterate through matrix. When `'1'` is found, increment island counter and invoke DFS/BFS to mutate connected land to `'0'`.
+# 200. Number of Islands
 
 ## Complexity
-- Time: $O(M \times N)$
-- Space: $O(M \times N)$ recursion stack
+- Time Complexity: O(m * n)
+- Space Complexity: O(m * n) worst case call stack
 
-## C++ Implementation
-```cpp
-#include <vector>
+## Rust Implementation
+```rust
+pub fn num_islands(mut grid: Vec<Vec<char>>) -> i32 {
+    let m = grid.len();
+    let n = grid[0].len();
+    let mut count = 0;
 
-class Solution {
-    void dfs(std::vector<std::vector<char>>& grid, int r, int c) {
-        if (r < 0 || r >= static_cast<int>(grid.size()) ||
-            c < 0 || c >= static_cast<int>(grid[0].size()) ||
-            grid[r][c] != '1') return;
+    fn sink(grid: &mut Vec<Vec<char>>, r: usize, c: usize, m: usize, n: usize) {
+        if grid[r][c] != '1' { return; }
+        grid[r][c] = '0';
 
-        grid[r][c] = '0'; // Sink island
-        dfs(grid, r + 1, c);
-        dfs(grid, r - 1, c);
-        dfs(grid, r, c + 1);
-        dfs(grid, r, c - 1);
+        if r > 0 { sink(grid, r - 1, c, m, n); }
+        if r + 1 < m { sink(grid, r + 1, c, m, n); }
+        if c > 0 { sink(grid, r, c - 1, m, n); }
+        if c + 1 < n { sink(grid, r, c + 1, m, n); }
     }
 
-public:
-    int numIslands(std::vector<std::vector<char>>& grid) {
-        int count = 0;
-        for (int r = 0; r < static_cast<int>(grid.size()); ++r) {
-            for (int c = 0; c < static_cast<int>(grid[0].size()); ++c) {
-                if (grid[r][c] == '1') {
-                    count++;
-                    dfs(grid, r, c);
-                }
+    for i in 0..m {
+        for j in 0..n {
+            if grid[i][j] == '1' {
+                count += 1;
+                sink(&mut grid, i, j, m, n);
             }
         }
-        return count;
     }
-};
+
+    count
+}
+```
+
+## TypeScript Implementation
+```typescript
+export function numIslands(grid: string[][]): number {
+    const m = grid.length;
+    const n = grid[0].length;
+    let count = 0;
+
+    const sink = (r: number, c: number) => {
+        if (r < 0 || r >= m || c < 0 || c >= n || grid[r][c] !== '1') return;
+        grid[r][c] = '0';
+        sink(r + 1, c);
+        sink(r - 1, c);
+        sink(r, c + 1);
+        sink(r, c - 1);
+    };
+
+    for (let r = 0; r < m; r++) {
+        for (let c = 0; c < n; c++) {
+            if (grid[r][c] === '1') {
+                count++;
+                sink(r, c);
+            }
+        }
+    }
+
+    return count;
+}
 ```
