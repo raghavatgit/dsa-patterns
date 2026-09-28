@@ -1,40 +1,31 @@
-# Problem 072: Edit Distance
-
-## Problem Statement
-Given two strings `word1` and `word2`, return the minimum number of operations required to convert `word1` to `word2`. Permitted operations: Insert, Delete, Replace.
-
-## Recurrence
-$$dp[i][j] = \begin{cases} dp[i - 1][j - 1] & \text{if } word1[i - 1] == word2[j - 1] \\ 1 + \min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) & \text{otherwise} \end{cases}$$
+# 72. Edit Distance
 
 ## Complexity
-- Time: $O(M \times N)$
-- Space: $O(N)$ with row rolling.
+- Time Complexity: O(m * n)
+- Space Complexity: O(m * n)
 
-## C++ Implementation
-```cpp
-#include <string>
-#include <vector>
-#include <algorithm>
+## Rust Implementation
+```rust
+pub fn min_distance(word1: String, word2: String) -> i32 {
+    let m = word1.len();
+    let n = word2.len();
+    let w1 = word1.as_bytes();
+    let w2 = word2.as_bytes();
+    let mut dp = vec![vec![0; n + 1]; m + 1];
 
-int minDistance(const std::string& word1, const std::string& word2) {
-    int m = word1.length(), n = word2.length();
-    std::vector<int> dp(n + 1);
+    for i in 0..=m { dp[i][0] = i as i32; }
+    for j in 0..=n { dp[0][j] = j as i32; }
 
-    for (int j = 0; j <= n; ++j) dp[j] = j;
-
-    for (int i = 1; i <= m; ++i) {
-        int prev = dp[0];
-        dp[0] = i;
-        for (int j = 1; j <= n; ++j) {
-            int temp = dp[j];
-            if (word1[i - 1] == word2[j - 1]) {
-                dp[j] = prev;
+    for i in 1..=m {
+        for j in 1..=n {
+            if w1[i - 1] == w2[j - 1] {
+                dp[i][j] = dp[i - 1][j - 1];
             } else {
-                dp[j] = 1 + std::min({dp[j], dp[j - 1], prev});
+                dp[i][j] = 1 + std::cmp::min(dp[i - 1][j - 1], std::cmp::min(dp[i - 1][j], dp[i][j - 1]));
             }
-            prev = temp;
         }
     }
-    return dp[n];
+
+    dp[m][n]
 }
 ```
