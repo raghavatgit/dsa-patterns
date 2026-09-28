@@ -76,6 +76,18 @@ Production-grade, verified algorithmic problem solutions implemented in Rust and
 | 315 | Count of Smaller Numbers After Self | Modified Merge Sort | Hard | $O(N \log N)$ | $O(N)$ |
 | 322 | Coin Change | Unbounded Knapsack DP | Medium | $O(N \times \text{amt})$ | $O(\text{amt})$ |
 | 329 | Longest Increasing Path in Matrix | Memoized DAG DFS | Hard | $O(MN)$ | $O(MN)$ |
+| 416 | Partition Equal Subset Sum | 0/1 Knapsack DP | Medium | $O(N \times \text{target})$ | $O(\text{target})$ |
 | 417 | Pacific Atlantic Water Flow | Multi-Source Reverse BFS | Medium | $O(MN)$ | $O(MN)$ |
+| 496 | Next Greater Element I | Monotonic Stack | Easy | $O(M + N)$ | $O(N)$ |
+| 542 | 01 Matrix | Multi-Source BFS | Medium | $O(MN)$ | $O(MN)$ |
 | 543 | Diameter of Binary Tree | Post-Order Depth DFS | Easy | $O(N)$ | $O(H)$ |
+| 567 | Permutation in String | Fixed Sliding Window | Medium | $O(N)$ | $O(1)$ |
+| 695 | Max Area of Island | Grid Connected Components DFS | Medium | $O(MN)$ | $O(MN)$ |
+| 704 | Binary Search | Overflow-Safe Halving | Easy | $O(\log N)$ | $O(1)$ |
+| 733 | Flood Fill | Matrix Traversal DFS | Easy | $O(MN)$ | $O(MN)$ |
+| 853 | Car Fleet | Monotonic Arrival Stack | Medium | $O(N \log N)$ | $O(N)$ |
 | 875 | Koko Eating Bananas | Monotonic Binary Search | Medium | $O(N \log(\max P))$ | $O(1)$ |
+| 973 | K Closest Points to Origin | Max-Heap / Quickselect | Medium | $O(N \log K)$ | $O(K)$ |
+| 981 | Time Based Key-Value Store | Upper Bound Binary Search | Medium | $O(\log N)$ | $O(N)$ |
+| 1046 | Last Stone Weight | Max-Heap Priority Queue | Easy | $O(N \log N)$ | $O(N)$ |
+| 1448 | Count Good Nodes in Binary Tree | Pre-Order Path Max DFS | Medium | $O(N)$ | $O(H)$ |
