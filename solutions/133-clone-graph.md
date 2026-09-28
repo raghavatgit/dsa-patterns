@@ -1,40 +1,35 @@
-# Problem 133: Clone Graph
-
-## Problem Statement
-Given a reference of a node in a connected undirected graph. Return a deep copy (clone) of the graph.
+# 133. Clone Graph
 
 ## Complexity
-- Time: $O(V + E)$
-- Space: $O(V)$ hash map and call stack
+- Time Complexity: O(V + E)
+- Space Complexity: O(V)
 
-## C++ Implementation
-```cpp
-#include <vector>
-#include <unordered_map>
+## TypeScript Implementation
+```typescript
+export class Node {
+    val: number;
+    neighbors: Node[];
+    constructor(val = 0, neighbors = []) {
+        this.val = val;
+        this.neighbors = neighbors;
+    }
+}
 
-class Node {
-public:
-    int val;
-    std::vector<Node*> neighbors;
-    Node() : val(0) {}
-    Node(int _val) : val(_val) {}
-};
+export function cloneGraph(node: Node | null): Node | null {
+    if (!node) return null;
+    const visited = new Map<Node, Node>();
 
-class Solution {
-    std::unordered_map<Node*, Node*> visited;
+    const dfs = (curr: Node): Node => {
+        if (visited.has(curr)) return visited.get(curr)!;
+        const clone = new Node(curr.val);
+        visited.set(curr, clone);
 
-public:
-    Node* cloneGraph(Node* node) {
-        if (!node) return nullptr;
-        if (visited.count(node)) return visited[node];
-
-        Node* clone = new Node(node->val);
-        visited[node] = clone;
-
-        for (Node* neighbor : node->neighbors) {
-            clone->neighbors.push_back(cloneGraph(neighbor));
+        for (const neighbor of curr.neighbors) {
+            clone.neighbors.push(dfs(neighbor));
         }
         return clone;
-    }
-};
+    };
+
+    return dfs(node);
+}
 ```
