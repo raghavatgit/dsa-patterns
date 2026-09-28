@@ -1,18 +1,26 @@
-# Problem: Maximum Depth of Binary Tree
+# 104. Maximum Depth of Binary Tree
 
-## Problem Statement
-Given the root of a binary tree, return its maximum depth. A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+## Complexity
+- Time Complexity: O(n)
+- Space Complexity: O(h)
 
-## Intuition & Approach
-1. Base case: If `root === null`, depth is 0.
-2. Recursively calculate depth of subtrees: `1 + max(maxDepth(root.left), maxDepth(root.right))`.
-3. Time Complexity: $O(N)$. Space Complexity: $O(H)$ stack depth.
+## Rust Implementation
+```rust
+pub fn max_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    match root {
+        None => 0,
+        Some(node) => {
+            let b = node.borrow();
+            1 + std::cmp::max(max_depth(b.left.clone()), max_depth(b.right.clone()))
+        }
+    }
+}
+```
 
 ## TypeScript Implementation
-
 ```typescript
 export function maxDepth(root: TreeNode | null): number {
-  if (root === null) return 0;
-  return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+    if (!root) return 0;
+    return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
 }
 ```
