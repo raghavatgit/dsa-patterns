@@ -1,33 +1,24 @@
-# Problem 322: Coin Change
-
-## Problem Statement
-You are given an integer array `coins` representing coins of different denominations and an integer `amount` representing a total amount of money. Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return `-1`.
-
-## DP Recurrence
-$$dp[a] = \min_{c \in coins}(dp[a - c] + 1) \quad \text{for } a \ge c$$
-Base case: $dp[0] = 0$, all other amounts initialized to $\infty$.
+# 322. Coin Change
 
 ## Complexity
-- Time: $O(\text{amount} \times |coins|)$
-- Space: $O(\text{amount})$
+- Time Complexity: O(amount * n)
+- Space Complexity: O(amount)
 
-## C++ Implementation
-```cpp
-#include <vector>
-#include <algorithm>
-
-int coinChange(const std::vector<int>& coins, int amount) {
-    const int INF = amount + 1;
-    std::vector<int> dp(amount + 1, INF);
+## Rust Implementation
+```rust
+pub fn coin_change(coins: Vec<i32>, amount: i32) -> i32 {
+    let a = amount as usize;
+    let mut dp = vec![amount + 1; a + 1];
     dp[0] = 0;
 
-    for (int a = 1; a <= amount; ++a) {
-        for (int coin : coins) {
-            if (a >= coin && dp[a - coin] != INF) {
-                dp[a] = std::min(dp[a], dp[a - coin] + 1);
+    for i in 1..=a {
+        for &coin in &coins {
+            if (coin as usize) <= i {
+                dp[i] = std::cmp::min(dp[i], dp[i - coin as usize] + 1);
             }
         }
     }
-    return dp[amount] > amount ? -1 : dp[amount];
+
+    if dp[a] > amount { -1 } else { dp[a] }
 }
 ```
