@@ -1,64 +1,32 @@
-# Problem 684: Redundant Connection
-
-## Problem Statement
-In this problem, a tree is an undirected graph that is connected and has no cycles. Return an edge that can be removed so that the resulting graph is a tree of `n` nodes. If there are multiple answers, return the answer that occurs last in the input.
-
-## Approach
-Disjoint Set Union (DSU) with path compression and union by rank.
-For each edge $(u, v)$:
-- If `find(u) == find(v)`, adding this edge creates a cycle. This is the redundant edge.
-- Otherwise, `union(u, v)`.
+# 684. Redundant Connection
 
 ## Complexity
-- Time: $O(N \alpha(N))$ where $\alpha$ is the inverse Ackermann function.
-- Space: $O(N)$
+- Time Complexity: O(n * alpha(n))
+- Space Complexity: O(n)
 
-## C++ Implementation
-```cpp
-#include <vector>
-#include <numeric>
+## Rust Implementation
+```rust
+pub fn find_redundant_connection(edges: Vec<Vec<i32>>) -> Vec<i32> {
+    let n = edges.len() + 1;
+    let mut parent: Vec<usize> = (0..n).collect();
 
-class DSU {
-    std::vector<int> parent;
-    std::vector<int> rank;
-public:
-    DSU(int n) : parent(n + 1), rank(n + 1, 0) {
-        std::iota(parent.begin(), parent.end(), 0);
-    }
-
-    int find(int i) {
-        if (parent[i] == i) return i;
-        return parent[i] = find(parent[i]);
-    }
-
-    bool unite(int i, int j) {
-        int root_i = find(i);
-        int root_j = find(j);
-        if (root_i == root_j) return false;
-
-        if (rank[root_i] < rank[root_j]) {
-            parent[root_i] = root_j;
-        } else if (rank[root_i] > rank[root_j]) {
-            parent[root_j] = root_i;
-        } else {
-            parent[root_j] = root_i;
-            rank[root_i]++;
+    fn find(parent: &mut [usize], mut i: usize) -> usize {
+        while i != parent[i] {
+            parent[i] = parent[parent[i]];
+            i = parent[i];
         }
-        return true;
+        i
     }
-};
 
-class Solution {
-public:
-    std::vector<int> findRedundantConnection(const std::vector<std::vector<int>>& edges) {
-        int n = edges.size();
-        DSU dsu(n);
-        for (const auto& edge : edges) {
-            if (!dsu.unite(edge[0], edge[1])) {
-                return edge;
-            }
+    for edge in edges {
+        let u = find(&mut parent, edge[0] as usize);
+        let v = find(&mut parent, edge[1] as usize);
+        if u == v {
+            return edge;
         }
-        return {};
+        parent[u] = v;
     }
-};
+
+    vec![]
+}
 ```
