@@ -1,50 +1,73 @@
-# Problem 207: Course Schedule
-
-## Problem Statement
-There are a total of `numCourses` courses you have to take, labeled from `0` to `numCourses - 1`. You are given an array `prerequisites` where `prerequisites[i] = [ai, bi]` indicates that you must take course `bi` first if you want to take course `ai`. Return `true` if you can finish all courses.
-
-## Kahn's Algorithm
-1. Compute in-degree for all courses.
-2. Push all nodes with in-degree 0 to queue.
-3. Dequeue node, increment `processed_count`, decrement in-degree of all neighbors.
-4. If neighbor in-degree becomes 0, push to queue.
-5. Return `processed_count == numCourses`.
+# 207. Course Schedule
 
 ## Complexity
-- Time: $O(V + E)$
-- Space: $O(V + E)$
+- Time Complexity: O(V + E)
+- Space Complexity: O(V + E)
 
-## C++ Implementation
-```cpp
-#include <vector>
-#include <queue>
+## Rust Implementation
+```rust
+use std::collections::VecDeque;
 
-bool canFinish(int numCourses, const std::vector<std::vector<int>>& prerequisites) {
-    std::vector<std::vector<int>> adj(numCourses);
-    std::vector<int> in_degree(numCourses, 0);
+pub fn can_finish(num_courses: i32, prerequisites: Vec<Vec<i32>>) -> bool {
+    let n = num_courses as usize;
+    let mut adj = vec![Vec::new(); n];
+    let mut in_degree = vec![0; n];
 
-    for (const auto& edge : prerequisites) {
-        adj[edge[1]].push_back(edge[0]);
-        in_degree[edge[0]]++;
+    for edge in prerequisites {
+        let course = edge[0] as usize;
+        let pre = edge[1] as usize;
+        adj[pre].push(course);
+        in_degree[course] += 1;
     }
 
-    std::queue<int> q;
-    for (int i = 0; i < numCourses; ++i) {
-        if (in_degree[i] == 0) q.push(i);
+    let mut queue = VecDeque::new();
+    for i in 0..n {
+        if in_degree[i] == 0 {
+            queue.push_back(i);
+        }
     }
 
-    int processed = 0;
-    while (!q.empty()) {
-        int u = q.front();
-        q.pop();
-        processed++;
-
-        for (int v : adj[u]) {
-            if (--in_degree[v] == 0) {
-                q.push(v);
+    let mut visited_count = 0;
+    while let Some(u) = queue.pop_front() {
+        visited_count += 1;
+        for &v in &adj[u] {
+            in_degree[v] -= 1;
+            if in_degree[v] == 0 {
+                queue.push_back(v);
             }
         }
     }
-    return processed == numCourses;
+
+    visited_count == n
+}
+```
+
+## TypeScript Implementation
+```typescript
+export function canFinish(numCourses: number, prerequisites: number[][]): boolean {
+    const inDegree = new Array(numCourses).fill(0);
+    const adj: number[][] = Array.from({ length: numCourses }, () => []);
+
+    for (const [course, pre] of prerequisites) {
+        adj[pre].push(course);
+        inDegree[course]++;
+    }
+
+    const queue: number[] = [];
+    for (let i = 0; i < numCourses; i++) {
+        if (inDegree[i] === 0) queue.push(i);
+    }
+
+    let resolved = 0;
+    while (queue.length > 0) {
+        const u = queue.shift()!;
+        resolved++;
+        for (const v of adj[u]) {
+            inDegree[v]--;
+            if (inDegree[v] === 0) queue.push(v);
+        }
+    }
+
+    return resolved === numCourses;
 }
 ```
