@@ -1,24 +1,32 @@
 # 112. Path Sum
 
-## Problem Statement
-Given the `root` of a binary tree and an integer `targetSum`, return `true` if the tree has a root-to-leaf path such that adding up all the values along the path equals `targetSum`.
+## Complexity
+- Time Complexity: O(n)
+- Space Complexity: O(h)
 
----
-
-## TypeScript Implementation
-
-```typescript
-export function hasPathSum(root: TreeNode | null, targetSum: number): boolean {
-  if (!root) return false;
-  if (!root.left && !root.right) return root.val === targetSum;
-
-  const remaining = targetSum - root.val;
-  return hasPathSum(root.left, remaining) || hasPathSum(root.right, remaining);
+## Rust Implementation
+```rust
+pub fn has_path_sum(root: Option<Rc<RefCell<TreeNode>>>, target_sum: i32) -> bool {
+    match root {
+        None => false,
+        Some(node) => {
+            let b = node.borrow();
+            let rem = target_sum - b.val;
+            if b.left.is_none() && b.right.is_none() {
+                return rem == 0;
+            }
+            has_path_sum(b.left.clone(), rem) || has_path_sum(b.right.clone(), rem)
+        }
+    }
 }
 ```
 
----
-
-## Complexity Analysis
-* **Time Complexity:** O(N) visits each node once.
-* **Space Complexity:** O(H) recursion stack.
+## TypeScript Implementation
+```typescript
+export function hasPathSum(root: TreeNode | null, targetSum: number): boolean {
+    if (!root) return false;
+    const remaining = targetSum - root.val;
+    if (!root.left && !root.right) return remaining === 0;
+    return hasPathSum(root.left, remaining) || hasPathSum(root.right, remaining);
+}
+```
