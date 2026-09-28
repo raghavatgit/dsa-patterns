@@ -1,46 +1,31 @@
-# Problem 295: Find Median from Data Stream
-
-## Problem Statement
-The median is the middle value in an ordered integer list. Implement the `MedianFinder` class with $O(\log N)$ insertion and $O(1)$ median lookup.
-
-## Two-Heap Balance
-- `left` max-heap stores smaller half of elements.
-- `right` min-heap stores larger half of elements.
-- Invariant: `left.size() == right.size()` or `left.size() == right.size() + 1`.
+# 295. Find Median from Data Stream
 
 ## Complexity
-- `addNum`: $O(\log N)$
-- `findMedian`: $O(1)$
-- Space: $O(N)$
+- addNum: O(log n)
+- findMedian: O(1)
+- Space Complexity: O(n)
 
-## C++ Implementation
-```cpp
-#include <queue>
-#include <vector>
+## TypeScript Implementation
+```typescript
+export class MedianFinder {
+    private small: number[] = []; // max heap
+    private large: number[] = []; // min heap
 
-class MedianFinder {
-    std::priority_queue<int> left; // Max-heap
-    std::priority_queue<int, std::vector<int>, std::greater<int>> right; // Min-heap
+    addNum(num: number): void {
+        this.small.push(num);
+        this.small.sort((a, b) => b - a);
+        this.large.push(this.small.shift()!);
+        this.large.sort((a, b) => a - b);
 
-public:
-    MedianFinder() {}
-
-    void addNum(int num) {
-        left.push(num);
-        right.push(left.top());
-        left.pop();
-
-        if (right.size() > left.size()) {
-            left.push(right.top());
-            right.pop();
+        if (this.large.length > this.small.length) {
+            this.small.push(this.large.shift()!);
+            this.small.sort((a, b) => b - a);
         }
     }
 
-    double findMedian() const {
-        if (left.size() > right.size()) {
-            return left.top();
-        }
-        return (left.top() + right.top()) / 2.0;
+    findMedian(): number {
+        if (this.small.length > this.large.length) return this.small[0];
+        return (this.small[0] + this.large[0]) / 2;
     }
-};
+}
 ```
