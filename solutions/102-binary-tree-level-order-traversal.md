@@ -1,45 +1,64 @@
-# Problem 102: Binary Tree Level Order Traversal
-
-## Problem Statement
-Given the root of a binary tree, return the level order traversal of its nodes' values (i.e., from left to right, level by level).
-
-## Approach
-FIFO Queue with Level Sizing:
-At the start of each level loop, capture `level_size = q.size()`.
-Dequeue exactly `level_size` nodes, record their values, and enqueue children.
+# 102. Binary Tree Level Order Traversal
 
 ## Complexity
-- Time: $O(N)$
-- Space: $O(N)$ for queue
+- Time Complexity: O(n)
+- Space Complexity: O(w) where w is tree maximum width
 
-## C++ Implementation
-```cpp
-#include <vector>
-#include <queue>
+## Rust Implementation
+```rust
+use std::collections::VecDeque;
 
-std::vector<std::vector<int>> levelOrder(TreeNode* root) {
-    if (!root) return {};
+pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
+    let mut res = Vec::new();
+    let root = match root {
+        Some(r) => r,
+        None => return res,
+    };
 
-    std::vector<std::vector<int>> result;
-    std::queue<TreeNode*> q;
-    q.push(root);
+    let mut queue = VecDeque::new();
+    queue.push_back(root);
 
-    while (!q.empty()) {
-        int levelSize = q.size();
-        std::vector<int> currentLevel;
-        currentLevel.reserve(levelSize);
+    while !queue.is_empty() {
+        let level_len = queue.len();
+        let mut level_vals = Vec::with_capacity(level_len);
 
-        for (int i = 0; i < levelSize; ++i) {
-            TreeNode* node = q.front();
-            q.pop();
-            currentLevel.push_back(node->val);
-
-            if (node->left) q.push(node->left);
-            if (node->right) q.push(node->right);
+        for _ in 0..level_len {
+            let node = queue.pop_front().unwrap();
+            let b = node.borrow();
+            level_vals.push(b.val);
+            if let Some(left) = b.left.clone() {
+                queue.push_back(left);
+            }
+            if let Some(right) = b.right.clone() {
+                queue.push_back(right);
+            }
         }
-        result.push_back(std::move(currentLevel));
+        res.push(level_vals);
     }
 
-    return result;
+    res
+}
+```
+
+## TypeScript Implementation
+```typescript
+export function levelOrder(root: TreeNode | null): number[][] {
+    if (!root) return [];
+    const res: number[][] = [];
+    const queue: TreeNode[] = [root];
+
+    while (queue.length > 0) {
+        const len = queue.length;
+        const currentLevel: number[] = [];
+        for (let i = 0; i < len; i++) {
+            const node = queue.shift()!;
+            currentLevel.push(node.val);
+            if (node.left) queue.push(node.left);
+            if (node.right) queue.push(node.right);
+        }
+        res.push(currentLevel);
+    }
+
+    return res;
 }
 ```
