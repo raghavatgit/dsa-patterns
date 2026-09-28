@@ -1,54 +1,41 @@
-# Problem 297: Serialize and Deserialize Binary Tree
-
-## Problem Statement
-Design an algorithm to serialize and deserialize a binary tree.
-
-## Approach
-Preorder traversal with sentinel `#` for null pointers.
-- Serialization: Preorder DFS outputting comma-separated values.
-- Deserialization: Tokenize stream, recursively reconstruct left and right subtrees.
+# 297. Serialize and Deserialize Binary Tree
 
 ## Complexity
-- Time: $O(N)$
-- Space: $O(N)$
+- Time Complexity: O(n)
+- Space Complexity: O(n)
 
-## C++ Implementation
-```cpp
-#include <string>
-#include <sstream>
-
-class Codec {
-    void serializeDFS(TreeNode* root, std::ostringstream& out) {
-        if (!root) {
-            out << "#,";
+## TypeScript Implementation
+```typescript
+export function serialize(root: TreeNode | null): string {
+    const tokens: string[] = [];
+    const build = (node: TreeNode | null) => {
+        if (!node) {
+            tokens.push("#");
             return;
         }
-        out << root->val << ",";
-        serializeDFS(root->left, out);
-        serializeDFS(root->right, out);
-    }
+        tokens.push(node.val.toString());
+        build(node.left);
+        build(node.right);
+    };
+    build(root);
+    return tokens.join(",");
+}
 
-    TreeNode* deserializeDFS(std::istringstream& in) {
-        std::string val;
-        if (!std::getline(in, val, ',')) return nullptr;
-        if (val == "#") return nullptr;
+export function deserialize(data: string): TreeNode | null {
+    const tokens = data.split(",");
+    let index = 0;
 
-        TreeNode* node = new TreeNode(std::stoi(val));
-        node->left = deserializeDFS(in);
-        node->right = deserializeDFS(in);
+    const build = (): TreeNode | null => {
+        if (index >= tokens.length || tokens[index] === "#") {
+            index++;
+            return null;
+        }
+        const node = new TreeNode(parseInt(tokens[index++], 10));
+        node.left = build();
+        node.right = build();
         return node;
-    }
+    };
 
-public:
-    std::string serialize(TreeNode* root) {
-        std::ostringstream out;
-        serializeDFS(root, out);
-        return out.str();
-    }
-
-    TreeNode* deserialize(const std::string& data) {
-        std::istringstream in(data);
-        return deserializeDFS(in);
-    }
-};
+    return build();
+}
 ```
