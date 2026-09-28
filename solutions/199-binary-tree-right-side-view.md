@@ -1,38 +1,57 @@
-# Problem 199: Binary Tree Right Side View
-
-## Problem Statement
-Given the root of a binary tree, imagine yourself standing on the right side of it, return the values of the nodes you can see ordered from top to bottom.
-
-## Reverse Preorder DFS (Root -> Right -> Left)
-Traverse the right child before the left child:
-The first node encountered at depth $D$ is guaranteed to be the rightmost visible node.
-If `depth == result.size()`, append `node->val`.
+# 199. Binary Tree Right Side View
 
 ## Complexity
-- Time: $O(N)$
-- Space: $O(H)$
+- Time Complexity: O(n)
+- Space Complexity: O(w)
 
-## C++ Implementation
-```cpp
-#include <vector>
+## Rust Implementation
+```rust
+use std::collections::VecDeque;
 
-class Solution {
-    void dfs(TreeNode* node, int depth, std::vector<int>& result) {
-        if (!node) return;
+pub fn right_side_view(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    let mut res = Vec::new();
+    let root = match root {
+        Some(r) => r,
+        None => return res,
+    };
 
-        if (depth == static_cast<int>(result.size())) {
-            result.push_back(node->val);
+    let mut queue = VecDeque::new();
+    queue.push_back(root);
+
+    while !queue.is_empty() {
+        let len = queue.len();
+        for i in 0..len {
+            let node = queue.pop_front().unwrap();
+            let b = node.borrow();
+            if i == len - 1 {
+                res.push(b.val);
+            }
+            if let Some(left) = b.left.clone() { queue.push_back(left); }
+            if let Some(right) = b.right.clone() { queue.push_back(right); }
         }
-
-        dfs(node->right, depth + 1, result);
-        dfs(node->left, depth + 1, result);
     }
 
-public:
-    std::vector<int> rightSideView(TreeNode* root) {
-        std::vector<int> result;
-        dfs(root, 0, result);
-        return result;
+    res
+}
+```
+
+## TypeScript Implementation
+```typescript
+export function rightSideView(root: TreeNode | null): number[] {
+    if (!root) return [];
+    const res: number[] = [];
+    const queue: TreeNode[] = [root];
+
+    while (queue.length > 0) {
+        const len = queue.length;
+        for (let i = 0; i < len; i++) {
+            const node = queue.shift()!;
+            if (i === len - 1) res.push(node.val);
+            if (node.left) queue.push(node.left);
+            if (node.right) queue.push(node.right);
+        }
     }
-};
+
+    return res;
+}
 ```
