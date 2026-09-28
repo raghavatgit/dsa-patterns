@@ -1,37 +1,24 @@
-# Problem: Minimum Path Sum
+# 64. Minimum Path Sum
 
-## Problem Statement
-Given an `m x n` grid filled with non-negative numbers, find a path from top left to bottom right, which minimizes the sum of all numbers along its path. You can only move either down or right at any point in time.
-
-## Intuition & Approach
-1D Rolling Array Dynamic Programming:
-1. Let `dp[c]` store the minimum path sum to cell in column `c` of the active row.
-2. Initialization: `dp[c] = dp[c - 1] + grid[0][c]` for top row.
-3. For subsequent rows:
-   - `dp[0] += grid[r][0]` (moving down from above).
-   - For $c > 0$: `dp[c] = min(dp[c] (down), dp[c - 1] (right)) + grid[r][c]`.
-4. Time Complexity: $O(M \times N)$. Space Complexity: $O(N)$ 1D array.
+## Complexity
+- Time Complexity: O(m * n)
+- Space Complexity: O(1) in-place
 
 ## TypeScript Implementation
-
 ```typescript
 export function minPathSum(grid: number[][]): number {
-  const m = grid.length;
-  const n = grid[0].length;
-  const dp: number[] = new Array(n).fill(0);
+    const m = grid.length;
+    const n = grid[0].length;
 
-  dp[0] = grid[0][0];
-  for (let c = 1; c < n; c++) {
-    dp[c] = dp[c - 1] + grid[0][c];
-  }
+    for (let i = 1; i < m; i++) grid[i][0] += grid[i - 1][0];
+    for (let j = 1; j < n; j++) grid[0][j] += grid[0][j - 1];
 
-  for (let r = 1; r < m; r++) {
-    dp[0] += grid[r][0];
-    for (let c = 1; c < n; c++) {
-      dp[c] = Math.min(dp[c], dp[c - 1]) + grid[r][c];
+    for (let i = 1; i < m; i++) {
+        for (let j = 1; j < n; j++) {
+            grid[i][j] += Math.min(grid[i - 1][j], grid[i][j - 1]);
+        }
     }
-  }
 
-  return dp[n - 1];
+    return grid[m - 1][n - 1];
 }
 ```
