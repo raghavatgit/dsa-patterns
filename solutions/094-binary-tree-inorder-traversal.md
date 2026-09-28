@@ -1,49 +1,69 @@
-# 094. Binary Tree Inorder Traversal
+# 94. Binary Tree Inorder Traversal
 
-## Problem Statement
-Given the `root` of a binary tree, return the inorder traversal of its nodes' values using O(1) auxiliary space (Morris Traversal).
+## Complexity
+- Time Complexity: O(n)
+- Space Complexity: O(h) where h is tree height
 
----
+## Rust Implementation
+```rust
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
 
-## Morris Threading Mechanics
-Create temporary predecessor threads from the rightmost child of the left subtree pointing back to the current node. This enables traversal backtracking without a runtime call stack.
+use std::rc::Rc;
+use std::cell::RefCell;
 
----
+pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    let mut res = Vec::new();
+    let mut stack = Vec::new();
+    let mut curr = root;
 
-## TypeScript Implementation
-
-```typescript
-export function inorderTraversal(root: TreeNode | null): number[] {
-  const result: number[] = [];
-  let curr = root;
-
-  while (curr !== null) {
-    if (curr.left === null) {
-      result.push(curr.val);
-      curr = curr.right;
-    } else {
-      let pred = curr.left;
-      while (pred.right !== null && pred.right !== curr) {
-        pred = pred.right;
-      }
-
-      if (pred.right === null) {
-        pred.right = curr; // Construct thread
-        curr = curr.left;
-      } else {
-        pred.right = null; // Sever thread
-        result.push(curr.val);
-        curr = curr.right;
-      }
+    while curr.is_some() || !stack.is_empty() {
+        while let Some(node) = curr {
+            curr = node.borrow().left.clone();
+            stack.push(node);
+        }
+        if let Some(node) = stack.pop() {
+            res.push(node.borrow().val);
+            curr = node.borrow().right.clone();
+        }
     }
-  }
 
-  return result;
+    res
 }
 ```
 
----
+## TypeScript Implementation
+```typescript
+export class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+    constructor(val = 0, left = null, right = null) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
 
-## Complexity Analysis
-* **Time Complexity:** O(N) each edge traversed at most three times.
-* **Space Complexity:** O(1) true constant auxiliary space.
+export function inorderTraversal(root: TreeNode | null): number[] {
+    const res: number[] = [];
+    const stack: TreeNode[] = [];
+    let curr = root;
+
+    while (curr || stack.length > 0) {
+        while (curr) {
+            stack.push(curr);
+            curr = curr.left;
+        }
+        curr = stack.pop()!;
+        res.push(curr.val);
+        curr = curr.right;
+    }
+
+    return res;
+}
+```
