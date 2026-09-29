@@ -1,42 +1,34 @@
-# Problem 084: Largest Rectangle in Histogram
-
-## Problem Statement
-Given an array of integers `heights` representing the histogram's bar height where the width of each bar is `1`, return the area of the largest rectangle in the histogram.
-
-## Monotonic Stack Approach
-A bar can be extended as a rectangle height as long as neighboring bars are $\ge$ its height.
-Maintain a strictly increasing stack of indices.
-When encountering a smaller bar, pop the stack top `h`:
-- Height of popped bar: `heights[h]`
-- Right boundary: current index `i`
-- Left boundary: new stack top (or `-1` if stack empty)
-- Width: `i - stack.top() - 1`
+# 84. Largest Rectangle in Histogram
 
 ## Complexity
-- Time: $O(N)$
-- Space: $O(N)$
+- Time Complexity: O(n)
+- Space Complexity: O(n)
 
-## C++ Implementation
-```cpp
-#include <vector>
-#include <stack>
-#include <algorithm>
+## Rust Implementation
+```rust
+pub fn largest_rectangle_area(heights: Vec<i32>) -> i32 {
+    let mut stack: Vec<usize> = Vec::new();
+    let mut max_area = 0;
+    let n = heights.len();
 
-int largestRectangleArea(std::vector<int>& heights) {
-    std::stack<int> st;
-    heights.push_back(0); // Sentinel to flush remaining stack
-    int max_area = 0;
-
-    for (int i = 0; i < static_cast<int>(heights.size()); ++i) {
-        while (!st.empty() && heights[st.top()] > heights[i]) {
-            int h = heights[st.top()];
-            st.pop();
-            int width = st.empty() ? i : i - st.top() - 1;
-            max_area = std::max(max_area, h * width);
+    for i in 0..=n {
+        let h = if i == n { 0 } else { heights[i] };
+        while let Some(&top) = stack.last() {
+            if h < heights[top] {
+                stack.pop();
+                let height = heights[top];
+                let width = match stack.last() {
+                    Some(&prev) => (i - prev - 1) as i32,
+                    None => i as i32,
+                };
+                max_area = std::cmp::max(max_area, height * width);
+            } else {
+                break;
+            }
         }
-        st.push(i);
+        stack.push(i);
     }
-    heights.pop_back();
-    return max_area;
+
+    max_area
 }
 ```
