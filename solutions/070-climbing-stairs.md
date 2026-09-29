@@ -8,13 +8,13 @@
 ```rust
 pub fn climb_stairs(n: i32) -> i32 {
     if n <= 2 { return n; }
-    let mut prev = 1;
-    let mut curr = 2;
+    let mut prev2 = 1;
+    let mut prev1 = 2;
     for _ in 3..=n {
-        let nxt = prev + curr;
-        prev = curr;
-        curr = nxt;
+        let curr = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = curr;
     }
-    curr
+    prev1
 }
 ```
