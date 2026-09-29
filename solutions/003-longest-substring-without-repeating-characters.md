@@ -2,27 +2,26 @@
 
 ## Complexity
 - Time Complexity: O(n)
-- Space Complexity: O(min(m, n))
+- Space Complexity: O(min(m, n)) for index map
 
 ## Rust Implementation
 ```rust
 use std::collections::HashMap;
 
 pub fn length_of_longest_substring(s: String) -> i32 {
-    let mut last_seen = HashMap::new();
+    let mut char_map = HashMap::new();
     let mut max_len = 0;
     let mut start = 0;
 
-    for (i, c) in s.chars().enumerate() {
-        if let Some(&prev_idx) = last_seen.get(&c) {
+    for (idx, c) in s.chars().enumerate() {
+        if let Some(&prev_idx) = char_map.get(&c) {
             if prev_idx >= start {
                 start = prev_idx + 1;
             }
         }
-        last_seen.insert(c, i);
-        max_len = std::cmp::max(max_len, i - start + 1);
+        char_map.insert(c, idx);
+        max_len = max_len.max(idx - start + 1);
     }
-
     max_len as i32
 }
 ```
