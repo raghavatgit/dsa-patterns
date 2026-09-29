@@ -11,11 +11,11 @@ pub fn has_path_sum(root: Option<Rc<RefCell<TreeNode>>>, target_sum: i32) -> boo
         None => false,
         Some(node) => {
             let b = node.borrow();
-            let rem = target_sum - b.val;
+            let remaining = target_sum - b.val;
             if b.left.is_none() && b.right.is_none() {
-                return rem == 0;
+                return remaining == 0;
             }
-            has_path_sum(b.left.clone(), rem) || has_path_sum(b.right.clone(), rem)
+            has_path_sum(b.left.clone(), remaining) || has_path_sum(b.right.clone(), remaining)
         }
     }
 }
@@ -25,8 +25,8 @@ pub fn has_path_sum(root: Option<Rc<RefCell<TreeNode>>>, target_sum: i32) -> boo
 ```typescript
 export function hasPathSum(root: TreeNode | null, targetSum: number): boolean {
     if (!root) return false;
-    const remaining = targetSum - root.val;
-    if (!root.left && !root.right) return remaining === 0;
-    return hasPathSum(root.left, remaining) || hasPathSum(root.right, remaining);
+    const rem = targetSum - root.val;
+    if (!root.left && !root.right) return rem === 0;
+    return hasPathSum(root.left, rem) || hasPathSum(root.right, rem);
 }
 ```
