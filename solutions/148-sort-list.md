@@ -1,57 +1,44 @@
-# Problem 148: Sort List
-
-## Problem Statement
-Given the head of a linked list, return the list after sorting it in ascending order in $O(N \log N)$ time and $O(\log N)$ recursion stack space.
-
-## Merge Sort on Linked List
-1. Partition list into two halves using fast and slow pointers.
-2. Recursively sort `left` and `right` sublists.
-3. Merge two sorted lists using dummy head in $O(N)$ time.
+# 148. Sort List
 
 ## Complexity
-- Time: $O(N \log N)$
-- Space: $O(\log N)$ recursion stack
+- Time Complexity: O(n log n)
+- Space Complexity: O(log n) recursion stack
 
-## C++ Implementation
-```cpp
-class Solution {
-    ListNode* merge(ListNode* l1, ListNode* l2) {
-        ListNode dummy(0);
-        ListNode* tail = &dummy;
+## TypeScript Implementation
+```typescript
+export function sortList(head: ListNode | null): ListNode | null {
+    if (!head || !head.next) return head;
 
-        while (l1 && l2) {
-            if (l1->val <= l2->val) {
-                tail->next = l1;
-                l1 = l1->next;
-            } else {
-                tail->next = l2;
-                l2 = l2->next;
-            }
-            tail = tail->next;
-        }
-        tail->next = l1 ? l1 : l2;
-        return dummy.next;
+    let prev: ListNode | null = null;
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast && fast.next) {
+        prev = slow;
+        slow = slow!.next;
+        fast = fast.next.next;
     }
+    prev!.next = null;
 
-public:
-    ListNode* sortList(ListNode* head) {
-        if (!head || !head->next) return head;
+    const l1 = sortList(head);
+    const l2 = sortList(slow);
+    return merge(l1, l2);
+}
 
-        ListNode* prev = nullptr;
-        ListNode* slow = head;
-        ListNode* fast = head;
-
-        while (fast && fast->next) {
-            prev = slow;
-            slow = slow->next;
-            fast = fast->next->next;
+function merge(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+    const dummy = new ListNode(0);
+    let curr = dummy;
+    while (l1 && l2) {
+        if (l1.val <= l2.val) {
+            curr.next = l1;
+            l1 = l1.next;
+        } else {
+            curr.next = l2;
+            l2 = l2.next;
         }
-
-        prev->next = nullptr; // Split into two halves
-
-        ListNode* l1 = sortList(head);
-        ListNode* l2 = sortList(slow);
-        return merge(l1, l2);
+        curr = curr.next;
     }
-};
+    curr.next = l1 || l2;
+    return dummy.next;
+}
 ```
