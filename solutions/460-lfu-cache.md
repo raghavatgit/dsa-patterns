@@ -1,75 +1,55 @@
-# Problem 460: LFU Cache
-
-## Problem Statement
-Design and implement a data structure for a Least Frequently Used (LFU) cache with $O(1)$ `get` and `put` time complexity.
+# 460. LFU Cache
 
 ## Complexity
-- `get`: $O(1)$
-- `put`: $O(1)$
-- Space: $O(\text{capacity})$
+- Time Complexity: O(1) get and put
+- Space Complexity: O(capacity)
 
-## C++ Implementation
-```cpp
-#include <unordered_map>
-#include <list>
+## TypeScript Implementation
+```typescript
+export class LFUCache {
+    private capacity: number;
+    private minFreq = 0;
+    private keyMap = new Map<number, { val: number; freq: number }>();
+    private freqMap = new Map<number, Set<number>>();
 
-class LFUCache {
-    struct Node {
-        int key, value, freq;
-        Node(int k, int v) : key(k), value(v), freq(1) {}
-    };
-
-    int cap;
-    int min_freq;
-    std::unordered_map<int, std::list<Node>::iterator> key_map;
-    std::unordered_map<int, std::list<Node>> freq_map;
-
-    void updateFreq(std::list<Node>::iterator it) {
-        int f = it->freq;
-        Node node = *it;
-        freq_map[f].erase(it);
-
-        if (freq_map[f].empty()) {
-            freq_map.erase(f);
-            if (min_freq == f) min_freq++;
-        }
-
-        node.freq++;
-        freq_map[node.freq].push_front(node);
-        key_map[node.key] = freq_map[node.freq].begin();
+    constructor(capacity: number) {
+        this.capacity = capacity;
     }
 
-public:
-    LFUCache(int capacity) : cap(capacity), min_freq(0) {}
-
-    int get(int key) {
-        if (!key_map.count(key) || cap == 0) return -1;
-        auto it = key_map[key];
-        int val = it->value;
-        updateFreq(it);
-        return val;
+    get(key: number): number {
+        if (!this.keyMap.has(key)) return -1;
+        const item = this.keyMap.get(key)!;
+        this.updateFreq(key, item);
+        return item.val;
     }
 
-    void put(int key, int value) {
-        if (cap == 0) return;
-
-        if (key_map.count(key)) {
-            auto it = key_map[key];
-            it->value = value;
-            updateFreq(it);
-            return;
+    put(key: number, value: number): void {
+        if (this.capacity === 0) return;
+        if (this.keyMap.has(key)) {
+            const item = this.keyMap.get(key)!;
+            item.val = value;
+            this.updateFreq(key, item);
+        } else {
+            if (this.keyMap.size >= this.capacity) {
+                const evictSet = this.freqMap.get(this.minFreq)!;
+                const evictKey = evictSet.keys().next().value;
+                evictSet.delete(evictKey);
+                this.keyMap.delete(evictKey);
+            }
+            this.keyMap.set(key, { val: value, freq: 1 });
+            if (!this.freqMap.has(1)) this.freqMap.set(1, new Set());
+            this.freqMap.get(1)!.add(key);
+            this.minFreq = 1;
         }
-
-        if (key_map.size() >= cap) {
-            auto victim = freq_map[min_freq].back();
-            key_map.erase(victim.key);
-            freq_map[min_freq].pop_back();
-            if (freq_map[min_freq].empty()) freq_map.erase(min_freq);
-        }
-
-        min_freq = 1;
-        freq_map[1].push_front(Node(key, value));
-        key_map[key] = freq_map[1].begin();
     }
-};
+
+    private updateFreq(key: number, item: { val: number; freq: number }) {
+        const oldSet = this.freqMap.get(item.freq)!;
+        oldSet.delete(key);
+        if (oldSet.size === 0 && item.freq === this.minFreq) this.minFreq++;
+        item.freq++;
+        if (!this.freqMap.has(item.freq)) this.freqMap.set(item.freq, new Set());
+        this.freqMap.get(item.freq)!.add(key);
+    }
+}
 ```
