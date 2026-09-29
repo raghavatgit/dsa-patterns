@@ -1,56 +1,35 @@
-# Problem 127: Word Ladder
-
-## Problem Statement
-A transformation sequence from word `beginWord` to word `endWord` using a dictionary `wordList` is a sequence of words `beginWord -> s1 -> s2 -> ... -> sk` such that every adjacent pair of words differs by a single letter. Return the number of words in the shortest transformation sequence.
-
-## Bidirectional BFS
-Expand from both `beginSet` and `endSet`. Always pick the smaller set to expand to minimize branching factor.
+# 127. Word Ladder
 
 ## Complexity
-- Time: $O(M^2 \times N)$ where $M$ is word length, $N$ is dictionary size.
-- Space: $O(M \times N)$
+- Time Complexity: O(m^2 * n)
+- Space Complexity: O(m * n)
 
-## C++ Implementation
-```cpp
-#include <string>
-#include <vector>
-#include <unordered_set>
+## Rust Implementation
+```rust
+use std::collections::{HashSet, VecDeque};
 
-int ladderLength(std::string beginWord, std::string endWord, std::vector<std::string>& wordList) {
-    std::unordered_set<std::string> dict(wordList.begin(), wordList.end());
-    if (!dict.count(endWord)) return 0;
+pub fn ladder_length(begin_word: String, end_word: String, word_list: Vec<String>) -> i32 {
+    let mut dict: HashSet<String> = word_list.into_iter().collect();
+    if !dict.contains(&end_word) { return 0; }
 
-    std::unordered_set<std::string> begin_set = {beginWord};
-    std::unordered_set<std::string> end_set = {endWord};
-    int steps = 1;
+    let mut queue = VecDeque::new();
+    queue.push_back((begin_word, 1));
 
-    while (!begin_set.empty() && !end_set.empty()) {
-        if (begin_set.size() > end_set.size()) {
-            std::swap(begin_set, end_set);
-        }
-
-        std::unordered_set<std::string> next_set;
-        for (std::string word : begin_set) {
-            dict.erase(word);
-        }
-
-        for (std::string word : begin_set) {
-            for (size_t i = 0; i < word.length(); ++i) {
-                char orig = word[i];
-                for (char c = 'a'; c <= 'z'; ++c) {
-                    word[i] = c;
-                    if (end_set.count(word)) return steps + 1;
-                    if (dict.count(word)) {
-                        next_set.insert(word);
-                        dict.erase(word);
-                    }
+    while let Some((curr, dist)) = queue.pop_front() {
+        if curr == end_word { return dist; }
+        let mut chars: Vec<char> = curr.chars().collect();
+        for i in 0..chars.len() {
+            let orig = chars[i];
+            for c in b'a'..=b'z' {
+                chars[i] = c as char;
+                let candidate: String = chars.iter().collect();
+                if dict.remove(&candidate) {
+                    queue.push_back((candidate, dist + 1));
                 }
-                word[i] = orig;
             }
+            chars[i] = orig;
         }
-        begin_set = std::move(next_set);
-        steps++;
     }
-    return 0;
+    0
 }
 ```
