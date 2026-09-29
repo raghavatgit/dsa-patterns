@@ -1,29 +1,17 @@
 # 338. Counting Bits
 
-## Problem Statement
-Given an integer `n`, return an array `ans` of length `n + 1` such that for each `i` (`0 <= i <= n`), `ans[i]` is the number of `1`'s in the binary representation of `i`.
+## Complexity
+- Time Complexity: O(n)
+- Space Complexity: O(n)
 
----
-
-## Dynamic Programming Invariant
-`ans[i] = ans[i >> 1] + (i & 1)`. The number of set bits in `i` equals the number of set bits in `i / 2` plus the least significant bit.
-
----
-
-## TypeScript Implementation
-
-```typescript
-export function countBits(n: number): number[] {
-  const ans = new Array(n + 1).fill(0);
-  for (let i = 1; i <= n; i++) {
-    ans[i] = ans[i >> 1] + (i & 1);
-  }
-  return ans;
+## Rust Implementation
+```rust
+pub fn count_bits(n: i32) -> Vec<i32> {
+    let n = n as usize;
+    let mut dp = vec![0; n + 1];
+    for i in 1..=n {
+        dp[i] = dp[i >> 1] + ((i & 1) as i32);
+    }
+    dp
 }
 ```
-
----
-
-## Complexity Analysis
-* **Time Complexity:** O(N) single pass.
-* **Space Complexity:** O(N) output buffer.
