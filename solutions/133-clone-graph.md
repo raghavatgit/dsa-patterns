@@ -2,7 +2,7 @@
 
 ## Complexity
 - Time Complexity: O(V + E)
-- Space Complexity: O(V) for visited node mapping
+- Space Complexity: O(V) hash map
 
 ## TypeScript Implementation
 ```typescript
