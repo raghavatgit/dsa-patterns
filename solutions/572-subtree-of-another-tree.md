@@ -1,31 +1,31 @@
-# Problem 572: Subtree of Another Tree
-
-## Problem Statement
-Given the roots of two binary trees `root` and `subRoot`, return `true` if there is a subtree of `root` with the same structure and node values of `subRoot` and `false` otherwise.
-
-## Algorithm
-- `isSame(p, q)` checks structural and value identity.
-- Recurse: `isSame(root, subRoot) || isSubtree(root->left, subRoot) || isSubtree(root->right, subRoot)`.
+# 572. Subtree of Another Tree
 
 ## Complexity
-- Time: $O(M \times N)$
-- Space: $O(H)$
+- Time Complexity: O(m * n)
+- Space Complexity: O(h)
 
-## C++ Implementation
-```cpp
-class Solution {
-    bool isSame(TreeNode* s, TreeNode* t) {
-        if (!s && !t) return true;
-        if (!s || !t) return false;
-        if (s->val != t->val) return false;
-        return isSame(s->left, t->left) && isSame(s->right, t->right);
+## Rust Implementation
+```rust
+use std::rc::Rc;
+use std::cell::RefCell;
+
+pub fn is_subtree(root: Option<Rc<RefCell<TreeNode>>>, sub_root: Option<Rc<RefCell<TreeNode>>>) -> bool {
+    fn is_same(p: &Option<Rc<RefCell<TreeNode>>>, q: &Option<Rc<RefCell<TreeNode>>>) -> bool {
+        match (p, q) {
+            (None, None) => true,
+            (Some(n1), Some(n2)) => {
+                let b1 = n1.borrow();
+                let b2 = n2.borrow();
+                b1.val == b2.val && is_same(&b1.left, &b2.left) && is_same(&b1.right, &b2.right)
+            }
+            _ => false,
+        }
     }
 
-public:
-    bool isSubtree(TreeNode* root, TreeNode* subRoot) {
-        if (!root) return false;
-        if (isSame(root, subRoot)) return true;
-        return isSubtree(root->left, subRoot) || isSubtree(root->right, subRoot);
-    }
-};
+    if root.is_none() { return false; }
+    if is_same(&root, &sub_root) { return true; }
+    let n = root.unwrap();
+    let b = n.borrow();
+    is_subtree(b.left.clone(), sub_root.clone()) || is_subtree(b.right.clone(), sub_root)
+}
 ```
