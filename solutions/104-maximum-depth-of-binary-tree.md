@@ -10,8 +10,9 @@ pub fn max_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     match root {
         None => 0,
         Some(node) => {
-            let b = node.borrow();
-            1 + std::cmp::max(max_depth(b.left.clone()), max_depth(b.right.clone()))
+            let left = max_depth(node.borrow().left.clone());
+            let right = max_depth(node.borrow().right.clone());
+            1 + left.max(right)
         }
     }
 }
