@@ -2,32 +2,34 @@
 
 ## Complexity
 - Time Complexity: O(V + E)
-- Space Complexity: O(V)
+- Space Complexity: O(V) color table
 
-## TypeScript Implementation
-```typescript
-export function isBipartite(graph: number[][]): boolean {
-    const n = graph.length;
-    const colors = new Array(n).fill(0); // 0: unvisited, 1: red, -1: blue
+## Rust Implementation
+```rust
+use std::collections::VecDeque;
 
-    for (let i = 0; i < n; i++) {
-        if (colors[i] !== 0) continue;
-        const queue: number[] = [i];
+pub fn is_bipartite(graph: Vec<Vec<i32>>) -> bool {
+    let n = graph.len();
+    let mut colors = vec![0; n]; // 0: unvisited, 1: blue, -1: red
+
+    for i in 0..n {
+        if colors[i] != 0 { continue; }
+        let mut q = VecDeque::new();
+        q.push_back(i);
         colors[i] = 1;
 
-        while (queue.length > 0) {
-            const u = queue.shift()!;
-            for (const v of graph[u]) {
-                if (colors[v] === 0) {
+        while let Some(u) = q.pop_front() {
+            for &v_i in &graph[u] {
+                let v = v_i as usize;
+                if colors[v] == 0 {
                     colors[v] = -colors[u];
-                    queue.push(v);
-                } else if (colors[v] === colors[u]) {
+                    q.push_back(v);
+                } else if colors[v] == colors[u] {
                     return false;
                 }
             }
         }
     }
-
-    return true;
+    true
 }
 ```
