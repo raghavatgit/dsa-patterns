@@ -7,42 +7,38 @@
 ## Rust Implementation
 ```rust
 pub fn is_balanced(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
-    fn check_height(node: Option<Rc<RefCell<TreeNode>>>) -> i32 {
-        let node = match node {
-            Some(n) => n,
-            None => return 0,
-        };
-        let b = node.borrow();
-        let left = check_height(b.left.clone());
-        if left == -1 { return -1; }
-        let right = check_height(b.right.clone());
-        if right == -1 { return -1; }
-
-        if (left - right).abs() > 1 {
-            -1
-        } else {
-            1 + std::cmp::max(left, right)
+    fn check_height(node: &Option<Rc<RefCell<TreeNode>>>) -> Option<i32> {
+        match node {
+            None => Some(0),
+            Some(n) => {
+                let b = n.borrow();
+                let left_h = check_height(&b.left)?;
+                let right_h = check_height(&b.right)?;
+                if (left_h - right_h).abs() > 1 {
+                    None
+                } else {
+                    Some(1 + left_h.max(right_h))
+                }
+            }
         }
     }
-
-    check_height(root) != -1
+    check_height(&root).is_some()
 }
 ```
 
 ## TypeScript Implementation
 ```typescript
 export function isBalanced(root: TreeNode | null): boolean {
-    const checkHeight = (node: TreeNode | null): number => {
+    function check(node: TreeNode | null): number {
         if (!node) return 0;
-        const left = checkHeight(node.left);
+        const left = check(node.left);
         if (left === -1) return -1;
-        const right = checkHeight(node.right);
+        const right = check(node.right);
         if (right === -1) return -1;
 
         if (Math.abs(left - right) > 1) return -1;
         return 1 + Math.max(left, right);
-    };
-
-    return checkHeight(root) !== -1;
+    }
+    return check(root) !== -1;
 }
 ```
