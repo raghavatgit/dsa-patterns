@@ -1,7 +1,7 @@
 # 155. Min Stack
 
 ## Complexity
-- Time Complexity: O(1) for push, pop, top, getMin
+- Time Complexity: O(1) all operations
 - Space Complexity: O(n)
 
 ## Rust Implementation
@@ -13,27 +13,20 @@ pub struct MinStack {
 
 impl MinStack {
     pub fn new() -> Self {
-        MinStack { stack: Vec::new(), min_stack: Vec::new() }
+        Self { stack: Vec::new(), min_stack: Vec::new() }
     }
-
     pub fn push(&mut self, val: i32) {
         self.stack.push(val);
-        let min_val = match self.min_stack.last() {
-            Some(&curr_min) => std::cmp::min(curr_min, val),
-            None => val,
-        };
-        self.min_stack.push(min_val);
+        let current_min = self.min_stack.last().copied().unwrap_or(val).min(val);
+        self.min_stack.push(current_min);
     }
-
     pub fn pop(&mut self) {
         self.stack.pop();
         self.min_stack.pop();
     }
-
     pub fn top(&self) -> i32 {
         *self.stack.last().unwrap()
     }
-
     pub fn get_min(&self) -> i32 {
         *self.min_stack.last().unwrap()
     }
