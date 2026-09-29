@@ -9,12 +9,12 @@
 pub fn is_same_tree(p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> bool {
     match (p, q) {
         (None, None) => true,
-        (Some(p_node), Some(q_node)) => {
-            let p_b = p_node.borrow();
-            let q_b = q_node.borrow();
-            p_b.val == q_b.val
-                && is_same_tree(p_b.left.clone(), q_b.left.clone())
-                && is_same_tree(p_b.right.clone(), q_b.right.clone())
+        (Some(n1), Some(n2)) => {
+            let b1 = n1.borrow();
+            let b2 = n2.borrow();
+            b1.val == b2.val
+                && is_same_tree(b1.left.clone(), b2.left.clone())
+                && is_same_tree(b1.right.clone(), b2.right.clone())
         }
         _ => false,
     }
@@ -26,6 +26,7 @@ pub fn is_same_tree(p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeN
 export function isSameTree(p: TreeNode | null, q: TreeNode | null): boolean {
     if (!p && !q) return true;
     if (!p || !q) return false;
-    return p.val === q.val && isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+    if (p.val !== q.val) return false;
+    return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
 }
 ```
