@@ -4,22 +4,24 @@
 - Time Complexity: O(n log n)
 - Space Complexity: O(n)
 
-## TypeScript Implementation
-```typescript
-export function carFleet(target: number, position: number[], speed: number[]): number {
-    const cars = position.map((pos, idx) => ({ pos, time: (target - pos) / speed[idx] }));
-    cars.sort((a, b) => b.pos - a.pos);
+## Rust Implementation
+```rust
+pub fn car_fleet(target: i32, position: Vec<i32>, speed: Vec<i32>) -> i32 {
+    let mut cars: Vec<(i32, f64)> = position.into_iter()
+        .zip(speed.into_iter())
+        .map(|(p, s)| (p, (target - p) as f64 / s as f64))
+        .collect();
 
-    let fleets = 0;
-    let maxTime = 0;
+    cars.sort_unstable_by(|a, b| b.0.cmp(&a.0));
+    let mut fleets = 0;
+    let mut max_time = 0.0;
 
-    for (const car of cars) {
-        if (car.time > maxTime) {
-            fleets++;
-            maxTime = car.time;
+    for (_, time) in cars {
+        if time > max_time {
+            fleets += 1;
+            max_time = time;
         }
     }
-
-    return fleets;
+    fleets
 }
 ```
