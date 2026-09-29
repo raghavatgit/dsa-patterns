@@ -1,23 +1,37 @@
 # 121. Best Time to Buy and Sell Stock
 
 ## Complexity
-- Time Complexity: O(n)
-- Space Complexity: O(1)
+- Time Complexity: O(n) single pass
+- Space Complexity: O(1) auxiliary
 
 ## Rust Implementation
 ```rust
 pub fn max_profit(prices: Vec<i32>) -> i32 {
     let mut min_price = i32::MAX;
-    let mut max_p = 0;
-
-    for p in prices {
-        if p < min_price {
-            min_price = p;
-        } else if p - min_price > max_p {
-            max_p = p - min_price;
+    let mut max_prof = 0;
+    for price in prices {
+        if price < min_price {
+            min_price = price;
+        } else {
+            max_prof = max_prof.max(price - min_price);
         }
     }
+    max_prof
+}
+```
 
-    max_p
+## TypeScript Implementation
+```typescript
+export function maxProfit(prices: number[]): number {
+    let minPrice = Infinity;
+    let maxProfit = 0;
+    for (const price of prices) {
+        if (price < minPrice) {
+            minPrice = price;
+        } else {
+            maxProfit = Math.max(maxProfit, price - minPrice);
+        }
+    }
+    return maxProfit;
 }
 ```
