@@ -1,76 +1,74 @@
-# Problem 146: LRU Cache
+# 146. LRU Cache
 
-## Problem Statement
-Design a data structure that follows the constraints of a Least Recently Used (LRU) cache with $O(1)$ `get` and `put` operations.
+## Complexity
+- Time Complexity: O(1) get and put
+- Space Complexity: O(capacity)
 
-## Architecture
-- Hash map maps `key` to list node iterator/pointer.
-- Doubly linked list maintains access recency (most recent at head, least recent at tail).
+## TypeScript Implementation
+```typescript
+class DLinkedNode {
+    key: number; val: number;
+    prev: DLinkedNode | null = null;
+    next: DLinkedNode | null = null;
+    constructor(k = 0, v = 0) { this.key = k; this.val = v; }
+}
 
-## C++ Implementation
-```cpp
-#include <unordered_map>
+export class LRUCache {
+    private capacity: number;
+    private map = new Map<number, DLinkedNode>();
+    private head = new DLinkedNode();
+    private tail = new DLinkedNode();
 
-class LRUCache {
-    struct Node {
-        int key, value;
-        Node* prev;
-        Node* next;
-        Node(int k, int v) : key(k), value(v), prev(nullptr), next(nullptr) {}
-    };
-
-    int capacity;
-    std::unordered_map<int, Node*> cache;
-    Node* head;
-    Node* tail;
-
-    void remove(Node* node) {
-        node->prev->next = node->next;
-        node->next->prev = node->prev;
+    constructor(capacity: number) {
+        this.capacity = capacity;
+        this.head.next = this.tail;
+        this.tail.prev = this.head;
     }
 
-    void insertHead(Node* node) {
-        node->next = head->next;
-        node->prev = head;
-        head->next->prev = node;
-        head->next = node;
+    get(key: number): number {
+        if (!this.map.has(key)) return -1;
+        const node = this.map.get(key)!;
+        this.moveToHead(node);
+        return node.val;
     }
 
-public:
-    LRUCache(int cap) : capacity(cap) {
-        head = new Node(-1, -1);
-        tail = new Node(-1, -1);
-        head->next = tail;
-        tail->prev = head;
-    }
-
-    int get(int key) {
-        if (!cache.count(key)) return -1;
-        Node* node = cache[key];
-        remove(node);
-        insertHead(node);
-        return node->value;
-    }
-
-    void put(int key, int value) {
-        if (cache.count(key)) {
-            Node* node = cache[key];
-            node->value = value;
-            remove(node);
-            insertHead(node);
-            return;
+    put(key: number, value: number): void {
+        if (this.map.has(key)) {
+            const node = this.map.get(key)!;
+            node.val = value;
+            this.moveToHead(node);
+        } else {
+            const newNode = new DLinkedNode(key, value);
+            this.map.set(key, newNode);
+            this.addNode(newNode);
+            if (this.map.size > this.capacity) {
+                const tailPrev = this.popTail();
+                this.map.delete(tailPrev.key);
+            }
         }
-
-        if (cache.size() >= capacity) {
-            Node* lru = tail->prev;
-            remove(lru);
-            cache.erase(lru->key);
-            delete lru;
-        }
-
-        Node* new_node = new Node(key, value);
-        cache[key] = new_node;
-        insertHead(new_node);
     }
-};
+
+    private addNode(node: DLinkedNode) {
+        node.prev = this.head;
+        node.next = this.head.next;
+        this.head.next!.prev = node;
+        this.head.next = node;
+    }
+
+    private removeNode(node: DLinkedNode) {
+        node.prev!.next = node.next;
+        node.next!.prev = node.prev;
+    }
+
+    private moveToHead(node: DLinkedNode) {
+        this.removeNode(node);
+        this.addNode(node);
+    }
+
+    private popTail(): DLinkedNode {
+        const res = this.tail.prev!;
+        this.removeNode(res);
+        return res;
+    }
+}
 ```
