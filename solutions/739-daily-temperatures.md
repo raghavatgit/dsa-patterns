@@ -1,37 +1,28 @@
-# Problem 739: Daily Temperatures
-
-## Problem Statement
-Given an array of integers `temperatures` represents the daily temperatures, return an array `answer` such that `answer[i]` is the number of days you have to wait after the `i-th` day to get a warmer temperature. If there is no future day for which this is possible, keep `answer[i] == 0`.
-
-## Monotonic Stack Approach
-Iterate through the array while maintaining a monotonic decreasing stack of indices.
-When `temperatures[i] > temperatures[st.top()]`:
-- The warmer day for `prev = st.top()` is `i`.
-- `answer[prev] = i - prev`.
-- Pop `prev` and repeat until invariant is restored.
+# 739. Daily Temperatures
 
 ## Complexity
-- Time: $O(N)$
-- Space: $O(N)$
+- Time Complexity: O(n)
+- Space Complexity: O(n)
 
-## C++ Implementation
-```cpp
-#include <vector>
-#include <stack>
+## Rust Implementation
+```rust
+pub fn daily_temperatures(temperatures: Vec<i32>) -> Vec<i32> {
+    let n = temperatures.len();
+    let mut res = vec![0; n];
+    let mut stack: Vec<usize> = Vec::new();
 
-std::vector<int> dailyTemperatures(const std::vector<int>& temperatures) {
-    int n = temperatures.size();
-    std::vector<int> answer(n, 0);
-    std::stack<int> st;
-
-    for (int i = 0; i < n; ++i) {
-        while (!st.empty() && temperatures[i] > temperatures[st.top()]) {
-            int prev_idx = st.top();
-            st.pop();
-            answer[prev_idx] = i - prev_idx;
+    for i in 0..n {
+        while let Some(&top) = stack.last() {
+            if temperatures[i] > temperatures[top] {
+                stack.pop();
+                res[top] = (i - top) as i32;
+            } else {
+                break;
+            }
         }
-        st.push(i);
+        stack.push(i);
     }
-    return answer;
+
+    res
 }
 ```
