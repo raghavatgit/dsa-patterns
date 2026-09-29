@@ -1,39 +1,49 @@
-# Problem 128: Longest Consecutive Sequence
-
-## Problem Statement
-Given an unsorted array of integers `nums`, return the length of the longest consecutive elements sequence in $O(N)$ time.
-
-## Algorithm
-Insert all elements into an unordered hash set.
-Iterate through numbers: only start counting if `x - 1` is not in the set (guaranteeing `x` is the streak root).
-Increment `curr = x + 1` while present in set. Update `max_streak`.
+# 128. Longest Consecutive Sequence
 
 ## Complexity
-- Time: $O(N)$ each element visited at most twice.
-- Space: $O(N)$
+- Time Complexity: O(n)
+- Space Complexity: O(n) for HashSet lookup
 
-## C++ Implementation
-```cpp
-#include <vector>
-#include <unordered_set>
-#include <algorithm>
+## Rust Implementation
+```rust
+use std::collections::HashSet;
 
-int longestConsecutive(const std::vector<int>& nums) {
-    std::unordered_set<int> num_set(nums.begin(), nums.end());
-    int max_streak = 0;
+pub fn longest_consecutive(nums: Vec<i32>) -> i32 {
+    let set: HashSet<i32> = nums.into_iter().collect();
+    let mut longest = 0;
 
-    for (int num : num_set) {
-        if (!num_set.count(num - 1)) {
-            int curr = num;
-            int streak = 1;
-
-            while (num_set.count(curr + 1)) {
-                curr++;
-                streak++;
+    for &num in &set {
+        if !set.contains(&(num - 1)) {
+            let mut curr = num;
+            let mut streak = 1;
+            while set.contains(&(curr + 1)) {
+                curr += 1;
+                streak += 1;
             }
-            max_streak = std::max(max_streak, streak);
+            longest = longest.max(streak);
         }
     }
-    return max_streak;
+    longest
+}
+```
+
+## TypeScript Implementation
+```typescript
+export function longestConsecutive(nums: number[]): number {
+    const set = new Set(nums);
+    let longest = 0;
+
+    for (const num of set) {
+        if (!set.has(num - 1)) {
+            let current = num;
+            let streak = 1;
+            while (set.has(current + 1)) {
+                current += 1;
+                streak += 1;
+            }
+            longest = Math.max(longest, streak);
+        }
+    }
+    return longest;
 }
 ```
