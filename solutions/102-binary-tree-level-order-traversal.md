@@ -2,41 +2,41 @@
 
 ## Complexity
 - Time Complexity: O(n)
-- Space Complexity: O(w) where w is tree maximum width
+- Space Complexity: O(w) maximum level width
 
 ## Rust Implementation
 ```rust
 use std::collections::VecDeque;
 
 pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
-    let mut res = Vec::new();
-    let root = match root {
+    let mut result = Vec::new();
+    let root_node = match root {
         Some(r) => r,
-        None => return res,
+        None => return result,
     };
 
     let mut queue = VecDeque::new();
-    queue.push_back(root);
+    queue.push_back(root_node);
 
     while !queue.is_empty() {
-        let level_len = queue.len();
-        let mut level_vals = Vec::with_capacity(level_len);
+        let level_size = queue.len();
+        let mut level_nodes = Vec::with_capacity(level_size);
 
-        for _ in 0..level_len {
-            let node = queue.pop_front().unwrap();
-            let b = node.borrow();
-            level_vals.push(b.val);
-            if let Some(left) = b.left.clone() {
-                queue.push_back(left);
-            }
-            if let Some(right) = b.right.clone() {
-                queue.push_back(right);
+        for _ in 0..level_size {
+            if let Some(curr) = queue.pop_front() {
+                let borrowed = curr.borrow();
+                level_nodes.push(borrowed.val);
+                if let Some(ref left) = borrowed.left {
+                    queue.push_back(Rc::clone(left));
+                }
+                if let Some(ref right) = borrowed.right {
+                    queue.push_back(Rc::clone(right));
+                }
             }
         }
-        res.push(level_vals);
+        result.push(level_nodes);
     }
-
-    res
+    result
 }
 ```
 
@@ -44,21 +44,21 @@ pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
 ```typescript
 export function levelOrder(root: TreeNode | null): number[][] {
     if (!root) return [];
-    const res: number[][] = [];
+    const result: number[][] = [];
     const queue: TreeNode[] = [root];
 
     while (queue.length > 0) {
-        const len = queue.length;
+        const levelSize = queue.length;
         const currentLevel: number[] = [];
-        for (let i = 0; i < len; i++) {
+
+        for (let i = 0; i < levelSize; i++) {
             const node = queue.shift()!;
             currentLevel.push(node.val);
             if (node.left) queue.push(node.left);
             if (node.right) queue.push(node.right);
         }
-        res.push(currentLevel);
+        result.push(currentLevel);
     }
-
-    return res;
+    return result;
 }
 ```
