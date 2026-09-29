@@ -1,29 +1,35 @@
 # 108. Convert Sorted Array to Binary Search Tree
 
-## Problem Statement
-Given an integer array `nums` where the elements are sorted in ascending order, convert it to a height-balanced binary search tree.
+## Complexity
+- Time Complexity: O(n)
+- Space Complexity: O(log n) stack frames
 
----
-
-## TypeScript Implementation
-
-```typescript
-export function sortedArrayToBST(nums: number[]): TreeNode | null {
-  function build(left: number, right: number): TreeNode | null {
-    if (left > right) return null;
-    const mid = left + Math.floor((right - left) / 2);
-    const root = new TreeNode(nums[mid]);
-    root.left = build(left, mid - 1);
-    root.right = build(mid + 1, right);
-    return root;
-  }
-
-  return build(0, nums.length - 1);
+## Rust Implementation
+```rust
+pub fn sorted_array_to_bst(nums: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
+    fn helper(arr: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
+        if arr.is_empty() { return None; }
+        let mid = arr.len() / 2;
+        let mut node = TreeNode::new(arr[mid]);
+        node.left = helper(&arr[..mid]);
+        node.right = helper(&arr[mid + 1..]);
+        Some(Rc::new(RefCell::new(node)))
+    }
+    helper(&nums)
 }
 ```
 
----
-
-## Complexity Analysis
-* **Time Complexity:** O(N) visits each number once.
-* **Space Complexity:** O(log N) recursion depth.
+## TypeScript Implementation
+```typescript
+export function sortedArrayToBST(nums: number[]): TreeNode | null {
+    function build(start: number, end: number): TreeNode | null {
+        if (start > end) return null;
+        const mid = Math.floor((start + end) / 2);
+        const root = new TreeNode(nums[mid]);
+        root.left = build(start, mid - 1);
+        root.right = build(mid + 1, end);
+        return root;
+    }
+    return build(0, nums.length - 1);
+}
+```
