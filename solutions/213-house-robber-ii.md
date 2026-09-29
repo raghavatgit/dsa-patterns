@@ -4,21 +4,21 @@
 - Time Complexity: O(n)
 - Space Complexity: O(1)
 
-## TypeScript Implementation
-```typescript
-export function rob(nums: number[]): number {
-    if (nums.length === 1) return nums[0];
-
-    const robLinear = (arr: number[]): number => {
-        let rob1 = 0, rob2 = 0;
-        for (const n of arr) {
-            const temp = Math.max(n + rob1, rob2);
-            rob1 = rob2;
-            rob2 = temp;
+## Rust Implementation
+```rust
+pub fn rob(nums: Vec<i32>) -> i32 {
+    if nums.len() == 1 { return nums[0]; }
+    fn rob_linear(slice: &[i32]) -> i32 {
+        let mut r1 = 0;
+        let mut r2 = 0;
+        for &n in slice {
+            let tmp = r2.max(r1 + n);
+            r1 = r2;
+            r2 = tmp;
         }
-        return rob2;
-    };
-
-    return Math.max(robLinear(nums.slice(0, -1)), robLinear(nums.slice(1)));
+        r2
+    }
+    let n = nums.len();
+    rob_linear(&nums[..n - 1]).max(rob_linear(&nums[1..]))
 }
 ```
