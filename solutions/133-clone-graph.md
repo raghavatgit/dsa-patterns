@@ -2,16 +2,16 @@
 
 ## Complexity
 - Time Complexity: O(V + E)
-- Space Complexity: O(V)
+- Space Complexity: O(V) for visited node mapping
 
 ## TypeScript Implementation
 ```typescript
-export class Node {
+class Node {
     val: number;
     neighbors: Node[];
-    constructor(val = 0, neighbors = []) {
-        this.val = val;
-        this.neighbors = neighbors;
+    constructor(val?: number, neighbors?: Node[]) {
+        this.val = (val === undefined ? 0 : val);
+        this.neighbors = (neighbors === undefined ? [] : neighbors);
     }
 }
 
@@ -19,16 +19,15 @@ export function cloneGraph(node: Node | null): Node | null {
     if (!node) return null;
     const visited = new Map<Node, Node>();
 
-    const dfs = (curr: Node): Node => {
+    function dfs(curr: Node): Node {
         if (visited.has(curr)) return visited.get(curr)!;
-        const clone = new Node(curr.val);
-        visited.set(curr, clone);
-
+        const copy = new Node(curr.val);
+        visited.set(curr, copy);
         for (const neighbor of curr.neighbors) {
-            clone.neighbors.push(dfs(neighbor));
+            copy.neighbors.push(dfs(neighbor));
         }
-        return clone;
-    };
+        return copy;
+    }
 
     return dfs(node);
 }
