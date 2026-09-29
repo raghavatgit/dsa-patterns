@@ -1,69 +1,36 @@
-# 105. Construct Binary Tree from Preorder and Inorder
+# 105. Construct Binary Tree from Preorder and Inorder Traversal
 
 ## Complexity
-- Time Complexity: O(n) using hash map index lookups
-- Space Complexity: O(n) for recursive tree creation and index table
+- Time Complexity: O(n) with in-order index hash map
+- Space Complexity: O(n)
 
 ## Rust Implementation
 ```rust
+use std::rc::Rc;
+use std::cell::RefCell;
 use std::collections::HashMap;
 
 pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
-    let mut in_map = HashMap::new();
-    for (i, &v) in inorder.iter().enumerate() {
-        in_map.insert(v, i);
-    }
+    let in_map: HashMap<i32, usize> = inorder.iter().enumerate().map(|(i, &v)| (v, i)).collect();
     let mut pre_idx = 0;
 
-    fn construct(
-        pre: &Vec<i32>,
-        in_map: &HashMap<i32, usize>,
-        pre_idx: &mut usize,
-        left: usize,
-        right: usize
-    ) -> Option<Rc<RefCell<TreeNode>>> {
-        if left > right { return None; }
+    fn helper(pre: &[i32], in_map: &HashMap<i32, usize>, pre_idx: &mut usize, in_start: usize, in_end: usize) -> Option<Rc<RefCell<TreeNode>>> {
+        if in_start > in_end || in_end >= in_map.len() { return None; }
         let root_val = pre[*pre_idx];
         *pre_idx += 1;
-        let root_in_idx = *in_map.get(&root_val).unwrap();
 
-        let left_child = if root_in_idx > 0 && root_in_idx - 1 >= left {
-            construct(pre, in_map, pre_idx, left, root_in_idx - 1)
-        } else {
-            None
-        };
-        let right_child = construct(pre, in_map, pre_idx, root_in_idx + 1, right);
+        let root = Rc::new(RefCell::new(TreeNode::new(root_val)));
+        let root_in_idx = in_map[&root_val];
 
-        Some(Rc::new(RefCell::new(TreeNode {
-            val: root_val,
-            left: left_child,
-            right: right_child,
-        })))
+        if root_in_idx > in_start {
+            root.borrow_mut().left = helper(pre, in_map, pre_idx, in_start, root_in_idx - 1);
+        }
+        if root_in_idx < in_end {
+            root.borrow_mut().right = helper(pre, in_map, pre_idx, root_in_idx + 1, in_end);
+        }
+        Some(root)
     }
 
-    if preorder.is_empty() { return None; }
-    construct(&preorder, &in_map, &mut pre_idx, 0, inorder.len() - 1)
-}
-```
-
-## TypeScript Implementation
-```typescript
-export function buildTree(preorder: number[], inorder: number[]): TreeNode | null {
-    const map = new Map<number, number>();
-    inorder.forEach((val, idx) => map.set(val, idx));
-    let preIndex = 0;
-
-    function build(left: number, right: number): TreeNode | null {
-        if (left > right) return null;
-        const val = preorder[preIndex++];
-        const root = new TreeNode(val);
-        const mid = map.get(val)!;
-
-        root.left = build(left, mid - 1);
-        root.right = build(mid + 1, right);
-        return root;
-    }
-
-    return build(0, inorder.length - 1);
+    helper(&preorder, &in_map, &mut pre_idx, 0, inorder.len() - 1)
 }
 ```
