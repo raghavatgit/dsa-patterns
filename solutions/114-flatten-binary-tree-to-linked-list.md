@@ -1,32 +1,47 @@
-# Problem 114: Flatten Binary Tree to Linked List
-
-## Problem Statement
-Given the `root` of a binary tree, flatten the tree into a 'linked list' in-place using preorder traversal order.
-
-## In-Place Morris Traversal
-At each node with a non-null `left` child:
-1. Find rightmost predecessor in `left` subtree.
-2. Link predecessor's `right` to current node's `right`.
-3. Move `left` subtree to `right`, and set `left` to null.
-4. Advance current pointer to `right`.
+# 114. Flatten Binary Tree to Linked List
 
 ## Complexity
-- Time: $O(N)$
-- Space: $O(1)$ auxiliary space
+- Time Complexity: O(n)
+- Space Complexity: O(1) using Morris predecessor wiring
 
-## C++ Implementation
-```cpp
-void flatten(TreeNode* root) {
-    TreeNode* curr = root;
-    while (curr) {
-        if (curr->left) {
-            TreeNode* pred = curr->left;
-            while (pred->right) pred = pred->right;
-            pred->right = curr->right;
-            curr->right = curr->left;
-            curr->left = nullptr;
+## Rust Implementation
+```rust
+pub fn flatten(root: &mut Option<Rc<RefCell<TreeNode>>>) {
+    let mut curr = root.clone();
+    while let Some(node) = curr {
+        let mut b = node.borrow_mut();
+        if let Some(left) = b.left.take() {
+            let mut rightmost = left.clone();
+            loop {
+                let next = rightmost.borrow().right.clone();
+                match next {
+                    Some(n) => rightmost = n,
+                    None => break,
+                }
+            }
+            rightmost.borrow_mut().right = b.right.take();
+            b.right = Some(left);
         }
-        curr = curr->right;
+        curr = b.right.clone();
+    }
+}
+```
+
+## TypeScript Implementation
+```typescript
+export function flatten(root: TreeNode | null): void {
+    let curr = root;
+    while (curr) {
+        if (curr.left) {
+            let rightmost = curr.left;
+            while (rightmost.right) {
+                rightmost = rightmost.right;
+            }
+            rightmost.right = curr.right;
+            curr.right = curr.left;
+            curr.left = null;
+        }
+        curr = curr.right;
     }
 }
 ```
