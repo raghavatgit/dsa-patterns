@@ -6,24 +6,17 @@
 
 ## Rust Implementation
 ```rust
+use std::rc::Rc;
+use std::cell::RefCell;
+
 pub fn invert_tree(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
     if let Some(node) = root.clone() {
-        let left = node.borrow().left.clone();
-        let right = node.borrow().right.clone();
-        node.borrow_mut().left = invert_tree(right);
-        node.borrow_mut().right = invert_tree(left);
+        let mut n = node.borrow_mut();
+        let left = invert_tree(n.left.take());
+        let right = invert_tree(n.right.take());
+        n.left = right;
+        n.right = left;
     }
     root
-}
-```
-
-## TypeScript Implementation
-```typescript
-export function invertTree(root: TreeNode | null): TreeNode | null {
-    if (!root) return null;
-    const temp = root.left;
-    root.left = invertTree(root.right);
-    root.right = invertTree(temp);
-    return root;
 }
 ```
