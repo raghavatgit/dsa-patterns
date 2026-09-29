@@ -18,20 +18,6 @@ pub fn find_min(nums: Vec<i32>) -> i32 {
             right = mid;
         }
     }
-
     nums[left]
-}
-```
-
-## TypeScript Implementation
-```typescript
-export function findMin(nums: number[]): number {
-    let left = 0, right = nums.length - 1;
-    while (left < right) {
-        const mid = Math.floor(left + (right - left) / 2);
-        if (nums[mid] > nums[right]) left = mid + 1;
-        else right = mid;
-    }
-    return nums[left];
 }
 ```
