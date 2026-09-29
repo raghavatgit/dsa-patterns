@@ -1,45 +1,48 @@
-# 105. Construct Binary Tree from Preorder and Inorder Traversal
+# 105. Construct Binary Tree from Preorder and Inorder
 
 ## Complexity
-- Time Complexity: O(n)
-- Space Complexity: O(n)
+- Time Complexity: O(n) using hash map index lookups
+- Space Complexity: O(n) for recursive tree creation and index table
 
 ## Rust Implementation
 ```rust
 use std::collections::HashMap;
 
 pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
-    let mut map = HashMap::new();
+    let mut in_map = HashMap::new();
     for (i, &v) in inorder.iter().enumerate() {
-        map.insert(v, i);
+        in_map.insert(v, i);
     }
-
-    fn helper(
-        preorder: &[i32],
-        pre_idx: &mut usize,
-        in_start: usize,
-        in_end: usize,
-        map: &HashMap<i32, usize>,
-    ) -> Option<Rc<RefCell<TreeNode>>> {
-        if in_start > in_end {
-            return None;
-        }
-
-        let val = preorder[*pre_idx];
-        *pre_idx += 1;
-        let root = Rc::new(RefCell::new(TreeNode::new(val)));
-        let in_idx = *map.get(&val).unwrap();
-
-        if in_idx > 0 && in_start <= in_idx - 1 {
-            root.borrow_mut().left = helper(preorder, pre_idx, in_start, in_idx - 1, map);
-        }
-        root.borrow_mut().right = helper(preorder, pre_idx, in_idx + 1, in_end, map);
-
-        Some(root)
-    }
-
     let mut pre_idx = 0;
-    helper(&preorder, &mut pre_idx, 0, inorder.len() - 1, &map)
+
+    fn construct(
+        pre: &Vec<i32>,
+        in_map: &HashMap<i32, usize>,
+        pre_idx: &mut usize,
+        left: usize,
+        right: usize
+    ) -> Option<Rc<RefCell<TreeNode>>> {
+        if left > right { return None; }
+        let root_val = pre[*pre_idx];
+        *pre_idx += 1;
+        let root_in_idx = *in_map.get(&root_val).unwrap();
+
+        let left_child = if root_in_idx > 0 && root_in_idx - 1 >= left {
+            construct(pre, in_map, pre_idx, left, root_in_idx - 1)
+        } else {
+            None
+        };
+        let right_child = construct(pre, in_map, pre_idx, root_in_idx + 1, right);
+
+        Some(Rc::new(RefCell::new(TreeNode {
+            val: root_val,
+            left: left_child,
+            right: right_child,
+        })))
+    }
+
+    if preorder.is_empty() { return None; }
+    construct(&preorder, &in_map, &mut pre_idx, 0, inorder.len() - 1)
 }
 ```
 
@@ -48,18 +51,18 @@ pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<Tr
 export function buildTree(preorder: number[], inorder: number[]): TreeNode | null {
     const map = new Map<number, number>();
     inorder.forEach((val, idx) => map.set(val, idx));
-    let preIdx = 0;
+    let preIndex = 0;
 
-    const build = (start: number, end: number): TreeNode | null => {
-        if (start > end) return null;
-        const val = preorder[preIdx++];
+    function build(left: number, right: number): TreeNode | null {
+        if (left > right) return null;
+        const val = preorder[preIndex++];
         const root = new TreeNode(val);
-        const idx = map.get(val)!;
+        const mid = map.get(val)!;
 
-        root.left = build(start, idx - 1);
-        root.right = build(idx + 1, end);
+        root.left = build(left, mid - 1);
+        root.right = build(mid + 1, right);
         return root;
-    };
+    }
 
     return build(0, inorder.length - 1);
 }
