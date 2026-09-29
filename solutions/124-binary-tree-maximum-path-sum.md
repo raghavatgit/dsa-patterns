@@ -7,43 +7,42 @@
 ## Rust Implementation
 ```rust
 pub fn max_path_sum(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
-    let mut max_sum = i32::MIN;
+    let mut global_max = i32::MIN;
 
-    fn dfs(node: Option<Rc<RefCell<TreeNode>>>, max_sum: &mut i32) -> i32 {
-        let node = match node {
-            Some(n) => n,
-            None => return 0,
-        };
-        let b = node.borrow();
-        let left_gain = std::cmp::max(0, dfs(b.left.clone(), max_sum));
-        let right_gain = std::cmp::max(0, dfs(b.right.clone(), max_sum));
-
-        let current_path = b.val + left_gain + right_gain;
-        *max_sum = std::cmp::max(*max_sum, current_path);
-
-        b.val + std::cmp::max(left_gain, right_gain)
+    fn max_gain(node: &Option<Rc<RefCell<TreeNode>>>, global_max: &mut i32) -> i32 {
+        match node {
+            None => 0,
+            Some(n) => {
+                let b = n.borrow();
+                let left_gain = max_gain(&b.left, global_max).max(0);
+                let right_gain = max_gain(&b.right, global_max).max(0);
+                let current_path = b.val + left_gain + right_gain;
+                *global_max = (*global_max).max(current_path);
+                b.val + left_gain.max(right_gain)
+            }
+        }
     }
 
-    dfs(root, &mut max_sum);
-    max_sum
+    max_gain(&root, &mut global_max);
+    global_max
 }
 ```
 
 ## TypeScript Implementation
 ```typescript
 export function maxPathSum(root: TreeNode | null): number {
-    let maxSum = -Infinity;
+    let globalMax = -Infinity;
 
-    const dfs = (node: TreeNode | null): number => {
+    function maxGain(node: TreeNode | null): number {
         if (!node) return 0;
-        const leftGain = Math.max(0, dfs(node.left));
-        const rightGain = Math.max(0, dfs(node.right));
-        const currentPath = node.val + leftGain + rightGain;
-        maxSum = Math.max(maxSum, currentPath);
+        const leftGain = Math.max(0, maxGain(node.left));
+        const rightGain = Math.max(0, maxGain(node.right));
+        const pathSum = node.val + leftGain + rightGain;
+        globalMax = Math.max(globalMax, pathSum);
         return node.val + Math.max(leftGain, rightGain);
-    };
+    }
 
-    dfs(root);
-    return maxSum;
+    maxGain(root);
+    return globalMax;
 }
 ```
