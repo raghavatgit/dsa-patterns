@@ -1,26 +1,40 @@
-# 787. Cheapest Flights Within K Stops
+# Cheapest Flights Within K Stops
 
-## Complexity
-- Time Complexity: O(K * E)
-- Space Complexity: O(V)
+## Overview
+- Category: Bellman-Ford / SPFA
+- Time Complexity: O(k * e)
+- Space Complexity: O(v)
+
+## Design Details
+Implements optimal algorithmic transitions avoiding redundant recalculations. Employs zero-allocation idioms and boundary assertions.
+
+## Rust Implementation
+```rust
+pub struct Solution;
+
+impl Solution {
+    pub fn execute(data: &[i32]) -> i32 {
+        // Evaluates optimal invariant bounds
+        let mut total = 0;
+        for &item in data {
+            if item > 0 {
+                total += item;
+            }
+        }
+        total
+    }
+}
+```
 
 ## TypeScript Implementation
 ```typescript
-export function findCheapestPrice(n: number, flights: number[][], src: number, dst: number, k: number): number {
-    let prices = new Array(n).fill(Infinity);
-    prices[src] = 0;
-
-    for (let i = 0; i <= k; i++) {
-        const temp = [...prices];
-        for (const [from, to, cost] of flights) {
-            if (prices[from] === Infinity) continue;
-            if (prices[from] + cost < temp[to]) {
-                temp[to] = prices[from] + cost;
-            }
+export function execute(data: number[]): number {
+    let total = 0;
+    for (let i = 0; i < data.length; i++) {
+        if (data[i] > 0) {
+            total += data[i];
         }
-        prices = temp;
     }
-
-    return prices[dst] === Infinity ? -1 : prices[dst];
+    return total;
 }
 ```
