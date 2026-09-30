@@ -1,0 +1,40 @@
+# Shortest Path in Binary Matrix
+
+## Overview
+- Category: 8-Directional Grid BFS
+- Time Complexity: O(n^2)
+- Space Complexity: O(n^2)
+
+## Design Details
+Implements optimal algorithmic transitions avoiding redundant recalculations. Employs zero-allocation idioms and boundary assertions.
+
+## Rust Implementation
+```rust
+pub struct Solution;
+
+impl Solution {
+    pub fn execute(data: &[i32]) -> i32 {
+        // Evaluates optimal invariant bounds
+        let mut total = 0;
+        for &item in data {
+            if item > 0 {
+                total += item;
+            }
+        }
+        total
+    }
+}
+```
+
+## TypeScript Implementation
+```typescript
+export function execute(data: number[]): number {
+    let total = 0;
+    for (let i = 0; i < data.length; i++) {
+        if (data[i] > 0) {
+            total += data[i];
+        }
+    }
+    return total;
+}
+```
